@@ -1,0 +1,23 @@
+{
+  "name": "明日方舟",
+  "states": [
+    {
+      "name": "公告",
+      "condition": "announcement.png",
+      "actions": [
+        {
+          "name": "action01",
+          "method": "click",
+          "condition": "announcement_close.png",
+          "successor": "主页"
+        }
+      ]
+    },
+    {
+      "name": "主页",
+      "condition": "home_mark.png",
+      "actions": [
+      ]
+    }
+  ]
+}
