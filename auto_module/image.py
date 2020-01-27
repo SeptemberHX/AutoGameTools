@@ -3,8 +3,11 @@ import numpy as np
 import cv2
 import os
 
+from .logger import get_logger
+
 
 MATCH_THRESHOLD = 0.95
+logger = get_logger('image')
 
 
 def get_game_frame(x, y, width, height):
@@ -19,6 +22,7 @@ def get_game_frame(x, y, width, height):
     img = None
     with mss() as sct:
         img = np.array(sct.grab({"top": y, "left": x, "width": width, "height": height}))
+        img = np.flip(img[:, :, :3], 2)
     return img
 
 
@@ -48,7 +52,9 @@ def check_contain_img(src_img, target_img):
 
 
 def get_resource_img(resource_dir_path, resource_name):
-    return cv2.imread(os.path.join(resource_dir_path, resource_name))
+    img_path = os.path.join(resource_dir_path, resource_name)
+    logger.info('read image ' + img_path)
+    return cv2.imread(img_path)
 
 
 if __name__ == '__main__':

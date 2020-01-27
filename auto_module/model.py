@@ -6,7 +6,9 @@ import networkx as nx
 import matplotlib.pyplot as plt
 
 from auto_module.exception import DatabaseIllegalException, GameConfigIllegalException
+from .image import get_resource_img, check_contain_img, get_matched_area
 from .logger import get_logger
+from typing import List, Dict
 
 GAME_DATABASE_DIR = '/home/septemberhx/Workspace/git/AutoGameTools/game_tools'
 GAME_CONFIG_FILENAME = 'config.json'
@@ -57,10 +59,10 @@ def read_game_config_file(config_path):
             print(config_json)
             game_config = GameConfig(
                 game_name=config_json['name'],
-                game_config_dir=config_path.split('/')[:-1]
+                game_config_dir=config_path[:config_path.rfind('/')]
             )
             for state_json in config_json['states']:
-                game_state = GameState(state_json['name'], state_json['condition'])
+                game_state = GameState(state_json['name'], state_json['condition'], game_config.game_config_dir)
                 for action_json in state_json['actions']:
                     game_action = GameAction(action_json['name'], action_json['method'], action_json['condition'], action_json['successor'])
                     game_state.add_action(game_action)
@@ -85,13 +87,18 @@ class GameAction:
         self.method = method
         self.condition = condition
         self.successor = successor
+        self.data_dir = ''
 
     def __str__(self) -> str:
         return '{0}|{1}|{2}|{3}'.format(self.name, self.method, self.condition, self.successor)
 
+    def get_action_area(self, src_img):
+        c_img = get_resource_img(self.data_dir, self.condition)
+        return get_matched_area(src_img, c_img)
+
 
 class GameState:
-    def __init__(self, name, conditions):
+    def __init__(self, name, conditions, game_config_dir):
         """
 
         :param name: state name, should be unique
@@ -101,16 +108,22 @@ class GameState:
         self.name = name
         self.conditions = conditions
         self.action_dict = {}
+        self.game_config_dir = game_config_dir
 
     def add_action(self, game_action: GameAction):
+        game_action.data_dir = os.path.join(self.game_config_dir, self.name)
         self.action_dict[game_action.name] = game_action
+
+    def check_if_conditions_met(self, src_img) -> bool:
+        c_img = get_resource_img(os.path.join(self.game_config_dir, self.name), self.conditions)
+        return check_contain_img(src_img, c_img)
 
 
 class GameConfig:
     def __init__(self, game_name, game_config_dir):
         self.game_name = game_name
         self.game_config_dir = game_config_dir
-        self.game_state_dict = {}
+        self.game_state_dict = {}  # type: Dict[str, GameState]
         self.game_action_dict = {}
         self.graph = None  # type: nx.DiGraph
 
@@ -127,7 +140,7 @@ class GameConfig:
             for action in state.action_dict.values():
                 self.graph.add_edge(state_name, action.successor, action=action.name, weight=1)
 
-    def get_shortest_action_list(self, source_state, target_state):
+    def get_shortest_action_list(self, source_state, target_state) -> List[GameAction]:
         action_list = []
         path_list = nx.algorithms.shortest_paths.shortest_path(self.graph, source_state, target_state, weight='weight')
         for i in range(0, len(path_list) - 1):
@@ -137,6 +150,11 @@ class GameConfig:
             logger.info('{0}->{1}: {2}'.format(path_list[0], path_list[1], action))
 
         return action_list
+
+    def check_current_state(self, wanted_state, src_img) -> bool:
+        if wanted_state not in self.game_state_dict:
+            return False
+        return self.game_state_dict[wanted_state].check_if_conditions_met(src_img)
 
     def draw_graph(self):
         edge_label_dict = {}
