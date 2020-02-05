@@ -10,10 +10,16 @@ from .image import get_resource_img, check_contain_img, get_matched_area
 from .logger import get_logger
 from typing import List, Dict
 
-GAME_DATABASE_DIR = '/home/septemberhx/Workspace/git/AutoGameTools/game_tools'
+GAME_DATABASE_DIR = 'D:\Workspace\git\AutoGameTools\game_tools'
 GAME_CONFIG_FILENAME = 'config.json'
 
 logger = get_logger('model')
+
+
+# pre-defined state
+RESERVED_STATE = {
+    'NEED_IDENTIFY': 'NEED_IDENTIFY',  # we don't know current state. A judgement should be executed
+}
 
 
 def load_game_databases():
@@ -40,26 +46,28 @@ def load_game_databases():
 
         try:
             logger.info('loading game ' + game_dir)
-            result_dict[game_dir] = read_game_config_file(game_specific_config_path)
+            result_dict[game_dir] = read_game_config_file(os.path.join(GAME_DATABASE_DIR, game_dir), GAME_CONFIG_FILENAME)
         except GameConfigIllegalException as e:
             logger.debug(e)
     return result_dict
 
 
-def read_game_config_file(config_path):
+def read_game_config_file(config_dir, config_name):
     """
     Parse the config file into GameConfig object
-    :param config_path: the path of the config file
+    :param config_dir: the path of the config dir
+    :param config_name: the name of the config file
     :return: GameConfig object
     """
     try:
-        with open(config_path) as f:
+        with open(os.path.join(config_dir, config_name), 'r', encoding='utf-8') as f:
             json_str = ''.join(f.readlines())
             config_json = json.loads(json_str, encoding='utf-8')
             print(config_json)
             game_config = GameConfig(
                 game_name=config_json['name'],
-                game_config_dir=config_path[:config_path.rfind('/')]
+                game_config_dir=config_dir,
+                game_title=config_json['title'],
             )
             for state_json in config_json['states']:
                 game_state = GameState(state_json['name'], state_json['condition'], game_config.game_config_dir)
@@ -115,17 +123,22 @@ class GameState:
         self.action_dict[game_action.name] = game_action
 
     def check_if_conditions_met(self, src_img) -> bool:
-        c_img = get_resource_img(os.path.join(self.game_config_dir, self.name), self.conditions)
-        return check_contain_img(src_img, c_img)
+        condition_img_list = self.conditions.split('|')
+        for condition_img in condition_img_list:
+            c_img = get_resource_img(os.path.join(self.game_config_dir, self.name), condition_img)
+            if not check_contain_img(src_img, c_img):
+                return False
+        return True
 
 
 class GameConfig:
-    def __init__(self, game_name, game_config_dir):
+    def __init__(self, game_name, game_config_dir, game_title):
         self.game_name = game_name
         self.game_config_dir = game_config_dir
         self.game_state_dict = {}  # type: Dict[str, GameState]
         self.game_action_dict = {}
         self.graph = None  # type: nx.DiGraph
+        self.game_title = game_title
 
     def add_state(self, game_state: GameState):
         self.game_state_dict[game_state.name] = game_state
@@ -147,7 +160,7 @@ class GameConfig:
             edge_data = self.graph.get_edge_data(path_list[i], path_list[i+1])
             action = self.game_action_dict[edge_data['action']]
             action_list.append(action)
-            logger.info('{0}->{1}: {2}'.format(path_list[0], path_list[1], action))
+            logger.info('{0}->{1}: {2}'.format(path_list[i], path_list[i+1], action))
 
         return action_list
 

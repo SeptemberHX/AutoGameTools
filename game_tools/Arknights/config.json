@@ -1,5 +1,6 @@
 {
   "name": "明日方舟",
+  "title": "明日方舟 - MuMu模拟器",
   "states": [
     {
       "name": "公告",
@@ -17,6 +18,42 @@
       "name": "主页",
       "condition": "home_mark.png",
       "actions": [
+      ]
+    },
+    {
+      "name": "LS-3选中",
+      "condition": "LS-3.png",
+      "actions": [
+        {
+          "name": "行动配置",
+          "method": "click",
+          "condition": "开始行动.png",
+          "successor": "行动配置"
+        }
+      ]
+    },
+    {
+      "name": "行动配置",
+      "condition": "快捷编队.png",
+      "actions": [
+        {
+          "name": "开始行动",
+          "method": "click",
+          "condition": "开始行动.png",
+          "successor": "LS-3行动结束"
+        }
+      ]
+    },
+    {
+      "name": "LS-3行动结束",
+      "condition": "行动结束.png|LS-3.png",
+      "actions": [
+        {
+          "name": "LS-3行动结束",
+          "method": "click",
+          "condition": "行动结束.png",
+          "successor": "LS-3选中"
+        }
       ]
     }
   ]
