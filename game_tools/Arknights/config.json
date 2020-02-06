@@ -5,6 +5,7 @@
     {
       "name": "公告",
       "condition": "announcement.png",
+      "type": "normal",
       "actions": [
         {
           "name": "action01",
@@ -17,12 +18,14 @@
     {
       "name": "主页",
       "condition": "home_mark.png",
+      "type": "normal",
       "actions": [
       ]
     },
     {
       "name": "LS-3选中",
       "condition": "LS-3.png",
+      "type": "normal",
       "actions": [
         {
           "name": "行动配置",
@@ -35,6 +38,7 @@
     {
       "name": "行动配置",
       "condition": "快捷编队.png",
+      "type": "normal",
       "actions": [
         {
           "name": "开始行动",
@@ -47,6 +51,7 @@
     {
       "name": "LS-3行动结束",
       "condition": "行动结束.png|LS-3.png",
+      "type": "normal",
       "actions": [
         {
           "name": "LS-3行动结束",
@@ -54,6 +59,40 @@
           "condition": "行动结束.png",
           "successor": "LS-3选中"
         }
+      ]
+    },
+    {
+      "name": "等级提升",
+      "condition": "等级提升.png",
+      "type": "jump",
+      "actions": [
+        {
+          "name": "等级提升-NEED_IDENTIFY",
+          "method": "click",
+          "condition": "等级提升.png",
+          "successor": "_NEED_IDENTIFY"
+        }
+      ]
+    },
+    {
+      "name": "使用药剂恢复",
+      "condition": "使用药剂恢复.png",
+      "type": "jump",
+      "actions": [
+        {
+          "name": "使用药剂恢复-NEED_IDENTIFY",
+          "method": "click",
+          "condition": "确定.png",
+          "successor": "_NEED_IDENTIFY"
+        }
+      ]
+    },
+    {
+      "name": "_NEED_IDENTIFY",
+      "condition": "",
+      "type": "NEED_IDENTIFY",
+      "actions": [
+
       ]
     }
   ]

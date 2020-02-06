@@ -20,6 +20,9 @@ MATCH_THRESHOLD = 0.9
 logger = get_logger('image')
 
 
+resource_img_dict = {}
+
+
 def get_game_frame(x, y, width, height):
     """
     Get one frame of the game with screenshot
@@ -69,10 +72,12 @@ def check_contain_img(src_img, target_img):
 
 def get_resource_img(resource_dir_path, resource_name):
     img_path = os.path.join(resource_dir_path, resource_name)
-    # logger.info('read image ' + img_path)
-    img = cv2.imdecode(np.fromfile(img_path, dtype=np.uint8), cv2.IMREAD_COLOR)
-    # img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    return img
+    if img_path not in resource_img_dict:
+        logger.info('read image ' + img_path)
+        img = cv2.imdecode(np.fromfile(img_path, dtype=np.uint8), cv2.IMREAD_COLOR)
+        # img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        resource_img_dict[img_path] = img
+    return resource_img_dict[img_path]
 
 
 class GameWindow:

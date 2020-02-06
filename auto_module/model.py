@@ -2,12 +2,13 @@
 
 import os
 import json
+import math
 import networkx as nx
 import matplotlib.pyplot as plt
 
-from auto_module.exception import DatabaseIllegalException, GameConfigIllegalException
-from .image import get_resource_img, check_contain_img, get_matched_area
-from .logger import get_logger
+from auto_module.exception import DatabaseIllegalException, GameConfigIllegalException, NoPathFindException
+from auto_module.image import get_resource_img, check_contain_img, get_matched_area
+from auto_module.logger import get_logger
 from typing import List, Dict
 
 GAME_DATABASE_DIR = 'D:\Workspace\git\AutoGameTools\game_tools'
@@ -18,7 +19,14 @@ logger = get_logger('model')
 
 # pre-defined state
 RESERVED_STATE = {
-    'NEED_IDENTIFY': 'NEED_IDENTIFY',  # we don't know current state. A judgement should be executed
+    'NEED_IDENTIFY': '_NEED_IDENTIFY',  # we don't know current state. A judgement should be executed
+}
+
+# state type
+STATE_TYPE = {
+    'NORMAL': 'normal',
+    'JUMP': 'jump',  # jump scare !!!
+    'NEED_IDENTIFY': 'NEED_IDENTIFY',
 }
 
 
@@ -70,7 +78,7 @@ def read_game_config_file(config_dir, config_name):
                 game_title=config_json['title'],
             )
             for state_json in config_json['states']:
-                game_state = GameState(state_json['name'], state_json['condition'], game_config.game_config_dir)
+                game_state = GameState(state_json['name'], state_json['condition'], game_config.game_config_dir, state_json['type'])
                 for action_json in state_json['actions']:
                     game_action = GameAction(action_json['name'], action_json['method'], action_json['condition'], action_json['successor'])
                     game_state.add_action(game_action)
@@ -99,6 +107,9 @@ class GameAction:
 
     def __str__(self) -> str:
         return '{0}|{1}|{2}|{3}'.format(self.name, self.method, self.condition, self.successor)
+    
+    def __repr__(self) -> str:
+        return self.__str__()
 
     def get_action_area(self, src_img):
         c_img = get_resource_img(self.data_dir, self.condition)
@@ -106,7 +117,7 @@ class GameAction:
 
 
 class GameState:
-    def __init__(self, name, conditions, game_config_dir):
+    def __init__(self, name, conditions, game_config_dir, state_type):
         """
 
         :param name: state name, should be unique
@@ -117,12 +128,16 @@ class GameState:
         self.conditions = conditions
         self.action_dict = {}
         self.game_config_dir = game_config_dir
+        self.type = state_type
 
     def add_action(self, game_action: GameAction):
         game_action.data_dir = os.path.join(self.game_config_dir, self.name)
         self.action_dict[game_action.name] = game_action
 
     def check_if_conditions_met(self, src_img) -> bool:
+        if len(self.conditions) == 0:
+            return False
+
         condition_img_list = self.conditions.split('|')
         for condition_img in condition_img_list:
             c_img = get_resource_img(os.path.join(self.game_config_dir, self.name), condition_img)
@@ -137,7 +152,7 @@ class GameConfig:
         self.game_config_dir = game_config_dir
         self.game_state_dict = {}  # type: Dict[str, GameState]
         self.game_action_dict = {}
-        self.graph = None  # type: nx.DiGraph
+        self.graph = nx.DiGraph()  # type: nx.DiGraph
         self.game_title = game_title
 
     def add_state(self, game_state: GameState):
@@ -146,7 +161,6 @@ class GameConfig:
             self.game_action_dict[k] = v
 
     def build_graph(self):
-        self.graph = nx.DiGraph()
         for state_name, _ in self.game_state_dict.items():
             self.graph.add_node(state_name)
         for state_name, state in self.game_state_dict.items():
@@ -162,6 +176,65 @@ class GameConfig:
             action_list.append(action)
             logger.info('{0}->{1}: {2}'.format(path_list[i], path_list[i+1], action))
 
+        return action_list
+
+    def get_shortest_action_list_dijkstra(self, source_state, target_state) -> List[GameAction]:
+        action_list = []
+        adj = {}
+        dis = {}
+        visited = [source_state]
+
+        # prepare the adj dict and the distance dict
+        for u, v, data in self.graph.edges.data():
+            if u not in adj:
+                adj[u] = {}
+            adj[u][v] = data['weight']
+            if u == source_state:
+                dis[v] = data['weight']
+        for node in self.graph.nodes:
+            if node not in dis:
+                dis[node] = math.inf
+            if node not in adj:
+                adj[node] = {}
+        dis.pop(source_state)
+
+        # run Dijkstra until the target_state is visited or loop ends
+        parents_node = {}
+        for _ in range(len(dis)):
+            sort_dis = sorted(dis.items(), key=lambda item: item[1])
+            for p, d in sort_dis:
+                if p not in visited:
+                    min_dis_point = p
+                    min_dis = d
+                    visited.append(p)
+                    break
+            # 更新相邻点的开销
+            for n in adj[min_dis_point].keys():
+                if n in visited:
+                    continue
+                update = min_dis + adj[min_dis_point][n]
+                if dis[n] > update:
+                    dis[n] = update
+                    parents_node[n] = min_dis_point
+                else:
+                    parents_node[n] = source_state
+            if target_state in visited:
+                break
+
+        if target_state not in visited:
+            raise NoPathFindException('From {0} to {1}'.format(source_state, target_state))
+        else:
+            curr_state = target_state
+            while curr_state in parents_node:
+                action_list.append(self.game_action_dict[
+                    self.graph.get_edge_data(parents_node[curr_state], curr_state)['action']
+                ])
+                curr_state = parents_node[curr_state]
+            action_list.append(self.game_action_dict[
+                self.graph.get_edge_data(source_state, curr_state)['action']
+            ])
+            action_list.reverse()
+        logger.info('Path {0} -> {1}: {2}'.format(source_state, target_state, action_list))
         return action_list
 
     def check_current_state(self, wanted_state, src_img) -> bool:

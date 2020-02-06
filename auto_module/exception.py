@@ -20,3 +20,19 @@ class UnmatchedGameStateException(Exception):
 
     def __str__(self):
         return self.msg
+
+
+class NoPathFindException(Exception):
+    def __init__(self, info):
+        self.msg = info
+
+    def __str__(self):
+        return self.msg
+
+
+class CannotMoveForwardException(Exception):
+    def __init__(self, info):
+        self.msg = info
+
+    def __str__(self):
+        return self.msg
