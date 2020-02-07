@@ -17,19 +17,6 @@ GAME_CONFIG_FILENAME = 'config.json'
 logger = get_logger('model')
 
 
-# pre-defined state
-RESERVED_STATE = {
-    'NEED_IDENTIFY': '_NEED_IDENTIFY',  # we don't know current state. A judgement should be executed
-}
-
-# state type
-STATE_TYPE = {
-    'NORMAL': 'normal',
-    'JUMP': 'jump',  # jump scare !!!
-    'NEED_IDENTIFY': 'NEED_IDENTIFY',
-}
-
-
 def load_game_databases():
     """
     Read all the game configure files in the $GAME_DATABASE_DIR
@@ -115,6 +102,10 @@ class GameAction:
         c_img = get_resource_img(self.data_dir, self.condition)
         return get_matched_area(src_img, c_img)
 
+    def check_if_condition_met(self, src_img):
+        c_img = get_resource_img(self.data_dir, self.condition)
+        return check_contain_img(src_img, c_img)
+
 
 class GameState:
     def __init__(self, name, conditions, game_config_dir, state_type):
@@ -139,9 +130,16 @@ class GameState:
             return False
 
         condition_img_list = self.conditions.split('|')
-        for condition_img in condition_img_list:
+        for condition in condition_img_list:
+            not_flag = False
+            if condition.startswith('!'):
+                condition_img = condition[1:]
+                not_flag = True
+            else:
+                condition_img = condition
             c_img = get_resource_img(os.path.join(self.game_config_dir, self.name), condition_img)
-            if not check_contain_img(src_img, c_img):
+            if_contains = check_contain_img(src_img, c_img)
+            if not_flag == if_contains:
                 return False
         return True
 
@@ -221,7 +219,7 @@ class GameConfig:
             if target_state in visited:
                 break
 
-        if target_state not in visited:
+        if target_state not in visited or dis[target_state] == math.inf:
             raise NoPathFindException('From {0} to {1}'.format(source_state, target_state))
         else:
             curr_state = target_state
@@ -249,7 +247,7 @@ class GameConfig:
 
         plt.rcParams['font.sans-serif'] = ['SimHei']
         plt.subplot(121)
-        pos = nx.spring_layout(self.graph)
+        pos = nx.spring_layout(self.graph, k=5, scale=3)
         nx.draw(self.graph, pos, with_labels=True, edge_color='black',
                 width=1, linewidths=1, node_size=500, node_color='pink', alpha=0.9)
         nx.draw_networkx_edge_labels(self.graph, pos, edge_labels=edge_label_dict, font_color='red')

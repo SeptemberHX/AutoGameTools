@@ -88,9 +88,44 @@
       ]
     },
     {
+      "name": "战术演习",
+      "condition": "LS.png|!开始行动.png",
+      "type": "horizontal_swipe",
+      "actions": [
+        {
+          "name": "战术演习->LS-3选中",
+          "method": "click",
+          "condition": "LS-3.png",
+          "successor": "LS-3选中"
+        }
+      ]
+    },
+    {
       "name": "_NEED_IDENTIFY",
       "condition": "",
       "type": "NEED_IDENTIFY",
+      "actions": [
+
+      ]
+    },
+
+    {
+      "name": "异卵同生",
+      "condition": "2-.png|!开始行动.png",
+      "type": "horizontal_swipe",
+      "actions": [
+        {
+          "name": "异卵同生->S2-4选中",
+          "method": "click",
+          "condition": "S2-4.png",
+          "successor": "S2-4选中"
+        }
+      ]
+    },
+    {
+      "name": "S2-4选中",
+      "condition": "S2-4.png",
+      "type": "normal",
       "actions": [
 
       ]

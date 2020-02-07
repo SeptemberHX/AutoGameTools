@@ -14,9 +14,10 @@ import win32gui
 import win32ui
 from mss import mss
 
+from auto_module.constant import DIRECTION
 from auto_module.logger import get_logger
 
-MATCH_THRESHOLD = 0.9
+MATCH_THRESHOLD = 0.95
 logger = get_logger('image')
 
 
@@ -70,6 +71,10 @@ def check_contain_img(src_img, target_img):
     return get_matched_area(src_img, target_img) is not None
 
 
+def check_img_equal(src_img, target_img):
+    return check_contain_img(src_img, target_img)
+
+
 def get_resource_img(resource_dir_path, resource_name):
     img_path = os.path.join(resource_dir_path, resource_name)
     if img_path not in resource_img_dict:
@@ -91,10 +96,7 @@ class GameWindow:
 
     def game_screenshot(self):
         if not win32gui.IsIconic(self.hwnd):  # check whether the window is minize or not
-            left, top, right, bot = win32gui.GetWindowRect(self.hwnd)
-            width = right - left
-            height = bot - top
-
+            width, height = self.get_shape()
             saveBitMap = win32ui.CreateBitmap()
             saveBitMap.CreateCompatibleBitmap(self.mfcDC, width, height)
             self.saveDC.SelectObject(saveBitMap)
@@ -113,3 +115,44 @@ class GameWindow:
         back1 = win32api.PostMessage(self.hwnd, win32con.WM_LBUTTONDOWN, win32con.MK_LBUTTON, long_position)
         time.sleep(0.05)
         back2 = win32api.PostMessage(self.hwnd, win32con.WM_LBUTTONUP, win32con.MK_LBUTTON, long_position)
+
+    def swipe(self, direction):
+        """
+        swipe the game window to the direction with length
+        """
+        width, height = self.get_shape()
+        x, y = width // 2, height // 2
+        long_position = win32api.MAKELONG(x, y)
+        win32api.PostMessage(self.hwnd, win32con.WM_MOUSEMOVE, 0, long_position)
+        win32api.PostMessage(self.hwnd, win32con.WM_LBUTTONDOWN, win32con.MK_LBUTTON, long_position)
+        x_t = 0
+        y_t = 0
+        speed = 2
+        if direction == DIRECTION['UP']:
+            y_t = speed
+        elif direction == DIRECTION['DOWN']:
+            y_t = -speed
+        elif direction == DIRECTION['LEFT']:
+            x_t = speed
+        elif direction == DIRECTION['RIGHT']:
+            x_t = -speed
+        for i in range(width // 3 // speed):
+            x += x_t
+            y += y_t
+            next_position = win32api.MAKELONG(x, y)
+            win32api.PostMessage(self.hwnd, win32con.WM_MOUSEMOVE, 1, next_position)
+            time.sleep(0.001)
+        time.sleep(0.1)
+        win32api.PostMessage(self.hwnd, win32con.WM_LBUTTONUP, win32con.MK_LBUTTON, next_position)
+
+    def get_shape(self):
+        left, top, right, bot = win32gui.GetWindowRect(self.hwnd)
+        width = right - left
+        height = bot - top
+        return width, height
+
+
+if __name__ == '__main__':
+    a1 = get_resource_img('../game_tools/Arknights/test', 'a1.png')
+    a2 = get_resource_img('../game_tools/Arknights/test', 'a2.png')
+    print(check_contain_img(a1, a2))

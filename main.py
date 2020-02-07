@@ -9,4 +9,6 @@ if __name__ == '__main__':
     # game_databases['Arknights'].get_shortest_action_list_dijkstra('LS-3选中', 'LS-3行动结束')
     game_window = GameWindow('明日方舟 - MuMu模拟器')
     # debug_judge_state(game_databases['Arknights'], game_window)
+    # execute_to(game_databases['Arknights'], '异卵同生', 'S2-4选中', game_window)
     execute_to_loop(game_databases['Arknights'], 'LS-3选中', 'LS-3行动结束', game_window)
+    # game_window.swipe(2)
