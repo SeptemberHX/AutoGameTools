@@ -22,27 +22,32 @@ def debug_judge_state(game_config: GameConfig, game_window: GameWindow):
         time.sleep(1)
 
 
-def execute_to_loop(game_config: GameConfig, from_state: str, to_state: str, game_window: GameWindow):
+def execute_to_loop(game_config: GameConfig, from_state: str, to_state: str, game_window: GameWindow, must_have_states=[]):
     while True:
-        execute_to(game_config, from_state, to_state, game_window)
+        execute_to(game_config, from_state, to_state, game_window, must_have_states)
 
 
-def execute_to(game_config: GameConfig, from_state: str, to_state: str, game_window: GameWindow):
+def execute_to(game_config: GameConfig, from_state: str, to_state: str, game_window: GameWindow, must_have_states=[]):
     """
     This function will try to move from the from_state to to_state
     from_state != real current state is allowed
     the state when this function finishes is guaranteed to be to_state
     """
     logger.info('In execute_to({0}, {1})'.format(from_state, to_state))
-    action_list = game_config.get_shortest_action_list_dijkstra(from_state, to_state)
+    state_id, game_img = get_valid_state(game_config, game_window, from_state)
+    if game_config.game_state_dict[state_id].type not in DIRECT_STATE_TYPE and to_state != RESERVED_STATE['NEED_IDENTIFY']:
+        state_id, game_img = handle_abnormal_state(game_config, game_window, state_id)
+
+    action_list = game_config.get_shortest_action_list_with_predecessor(from_state, to_state, must_have_states)
     curr_state = from_state
     game_img = None
     for action in action_list:
         logger.info('trying to move from {0} to {1}...'.format(curr_state, action.successor))
-        state_id, game_img = get_valid_state(game_config, game_window, curr_state)
+        if state_id == to_state:
+            break
 
-        while state_id != curr_state and game_config.game_state_dict[state_id].type not in DIRECT_STATE_TYPE:
-            state_id, game_img = handle_abnormal_state(game_config, game_window, state_id)
+        # while state_id != curr_state and game_config.game_state_dict[state_id].type not in DIRECT_STATE_TYPE:
+        #     state_id, game_img = handle_abnormal_state(game_config, game_window, state_id)
 
         while state_id != curr_state:
             logger.info('current status not match, trying to correct it')
@@ -50,25 +55,51 @@ def execute_to(game_config: GameConfig, from_state: str, to_state: str, game_win
 
         # do the action to move on to the next state
         logger.info('move from {0} to {1}'.format(curr_state, action.successor))
-        execute_action(game_config.game_state_dict[curr_state], action, game_img, game_window)
+        while state_id != action.successor:
+            logger.info('Executing action {0}...'.format(action.name))
+            execute_action(game_config.game_state_dict[curr_state], action, game_window)
+            time.sleep(SCT_INTERVAL)
+            state_id, _ = get_valid_state(game_config, game_window, action.successor)
+            if state_id == action.successor:
+                break
+            if game_config.game_state_dict[state_id].type not in DIRECT_STATE_TYPE:
+                state_id, _ = handle_abnormal_state(game_config, game_window, state_id)
+            if state_id != action.successor and to_state == RESERVED_STATE['NEED_IDENTIFY']:
+                break
+
+        logger.info('Action {0} finished'.format(action.name))
+        logger.info('move from {0} to {1} finished'.format(curr_state, action.successor))
         curr_state = action.successor
-        time.sleep(SCT_INTERVAL)
-    wait_until_screen_change(game_img, game_window)
-    # make sure the state after executing equals to to_state
-    state_id, game_img = get_valid_state(game_config, game_window, curr_state)
+
     while to_state != RESERVED_STATE['NEED_IDENTIFY'] and state_id != to_state:
+        logger.info('Trying to solve unmatched to_state {0}...'.format(state_id))
         if game_config.game_state_dict[state_id].type not in DIRECT_STATE_TYPE:
             state_id, game_img = handle_abnormal_state(game_config, game_window, state_id)
         else:
             raise CannotMoveForwardException(state_id)
+    logger.info('Execute from {0} to {1} finished'.format(from_state, to_state))
     return state_id, game_img
 
 
 def wait_until_screen_change(src_img, game_window: GameWindow):
+    logger.info('Wait until screen change...')
     curr_img = game_window.game_screenshot()
     while check_img_equal(src_img, curr_img):
         time.sleep(SCT_INTERVAL)
         curr_img = game_window.game_screenshot()
+    logger.info('Wait until screen change finished')
+
+
+def wait_until_status_meet(game_config: GameConfig, game_window: GameWindow, game_state, prev_state):
+    logger.info('Wait until current status is {0} or {1}'.format(game_state, prev_state))
+    state_id, game_img = get_valid_state(game_config, game_window, game_state)
+    while state_id not in [game_state, prev_state]:
+        if game_config.game_state_dict[state_id].type not in DIRECT_STATE_TYPE:
+            handle_abnormal_state(game_config, game_window, state_id)
+        time.sleep(SCT_INTERVAL)
+        state_id, game_img = get_valid_state(game_config, game_window, game_state)
+    logger.info('Wait finished at {0}'.format(state_id))
+    return state_id, game_img
 
 
 def get_valid_state(game_config: GameConfig, game_window: GameWindow, potential_status_name=None):
@@ -98,7 +129,7 @@ def handle_abnormal_state(game_config: GameConfig, game_window: GameWindow, game
 
 
 def judge_state(game_img, game_config: GameConfig, potensial_status_name=None):
-    if not potensial_status_name:
+    if potensial_status_name:
         if game_config.game_state_dict[potensial_status_name].check_if_conditions_met(game_img):
             return potensial_status_name
     for game_state_id, game_state in game_config.game_state_dict.items():
@@ -107,7 +138,8 @@ def judge_state(game_img, game_config: GameConfig, potensial_status_name=None):
     return None
 
 
-def execute_action(game_state: GameState, game_action: GameAction, game_img, game_window: GameWindow):
+def execute_action(game_state: GameState, game_action: GameAction, game_window: GameWindow):
+    game_img = game_window.game_screenshot()
     if game_state.type == STATE_TYPE['NORMAL'] or game_state.type == STATE_TYPE['JUMP']:
         execute_click_action(game_action, game_img, game_window)
     elif game_state.type == STATE_TYPE['HORIZONTAL_SWIPE']:
@@ -134,7 +166,11 @@ def execute_action(game_state: GameState, game_action: GameAction, game_img, gam
 
 
 def execute_click_action(game_action: GameAction, game_img, game_window: GameWindow):
-    l, t, r, b = game_action.get_action_area(game_img)
+    area = game_action.get_action_area(game_img)
+    if not area:
+        logger.warning('Failed to execute {0} due to miss match'.format(game_action.name))
+        return
+    l, t, r, b = area
     logger.info('src_img shape: {0}'.format(game_img.shape))
     # cv2.rectangle(game_img, (l, t), (r, b), (7, 249, 151), 2)
     # cv2.imshow("announcement", game_img)

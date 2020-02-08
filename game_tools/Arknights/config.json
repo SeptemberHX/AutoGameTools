@@ -44,7 +44,13 @@
           "name": "开始行动",
           "method": "click",
           "condition": "开始行动.png",
-          "successor": "LS-3行动结束"
+          "successor": "行动结束"
+        },
+        {
+          "name": "行动配置返回",
+          "method": "click",
+          "condition": "返回.png",
+          "successor": "_NEED_IDENTIFY"
         }
       ]
     },
@@ -106,6 +112,52 @@
       "type": "NEED_IDENTIFY",
       "actions": [
 
+      ]
+    },
+
+    {
+      "name": "货物运送",
+      "condition": "CE-.png|!开始行动.png",
+      "type": "horizontal_swipe",
+      "actions": [
+        {
+          "name": "货物运送->CE-3选中",
+          "method": "click",
+          "condition": "CE-3.png",
+          "successor": "CE-3选中"
+        }
+      ]
+    },
+      {
+      "name": "CE-3选中",
+      "condition": "CE-3.png",
+      "type": "normal",
+      "actions": [
+        {
+          "name": "行动配置",
+          "method": "click",
+          "condition": "开始行动.png",
+          "successor": "行动配置"
+        },
+        {
+          "name": "CE-3选中返回",
+          "method": "click",
+          "condition": "返回.png",
+          "successor": "货物运送"
+        }
+      ]
+    },
+    {
+      "name": "行动结束",
+      "condition": "行动结束.png",
+      "type": "jump",
+      "actions": [
+        {
+          "name": "行动结束->_NEED_IDENTIFY",
+          "method": "click",
+          "condition": "行动结束.png",
+          "successor": "_NEED_IDENTIFY"
+        }
       ]
     },
 

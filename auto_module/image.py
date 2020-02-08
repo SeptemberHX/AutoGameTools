@@ -50,18 +50,21 @@ def get_matched_area(src_image, target_image):
     """
     contain_flag = False
     result = cv2.matchTemplate(src_image, target_image, cv2.TM_CCOEFF_NORMED)
-    loc = np.where(result >= MATCH_THRESHOLD)
+    # loc = np.where(result >= MATCH_THRESHOLD)
     # w, h = target_image.shape[::-1]
     w, h = target_image.shape[1], target_image.shape[0]
-    for pt in zip(*loc[::-1]):
-        contain_flag = True
+    # for pt in zip(*loc[::-1]):
+    #     contain_flag = True
+    #     break
     #     cv2.rectangle(src_image, pt, (pt[0] + w, pt[1] + h), (7, 249, 151), 2)
     # if contain_flag:
     #     cv2.imshow('Detected', src_image)
     #     cv2.waitKey(0)
     #     cv2.destroyAllWindows()
-    if contain_flag:
-        min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
+    # logger.info('==> Run area match function <==')
+    # if contain_flag:
+    min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
+    if max_val > MATCH_THRESHOLD:
         return max_loc[0], max_loc[1], w + max_loc[0], h + max_loc[1]
     else:
         return None
@@ -80,7 +83,8 @@ def get_resource_img(resource_dir_path, resource_name):
     if img_path not in resource_img_dict:
         logger.info('read image ' + img_path)
         img = cv2.imdecode(np.fromfile(img_path, dtype=np.uint8), cv2.IMREAD_COLOR)
-        # img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        # img = cv2.imread(img_path, cv2.IMREAD_COLOR)
+        # img = cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)
         resource_img_dict[img_path] = img
     return resource_img_dict[img_path]
 

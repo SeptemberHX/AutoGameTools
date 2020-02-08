@@ -3,6 +3,7 @@
 import os
 import json
 import math
+import queue
 import networkx as nx
 import matplotlib.pyplot as plt
 
@@ -67,7 +68,9 @@ def read_game_config_file(config_dir, config_name):
             for state_json in config_json['states']:
                 game_state = GameState(state_json['name'], state_json['condition'], game_config.game_config_dir, state_json['type'])
                 for action_json in state_json['actions']:
-                    game_action = GameAction(action_json['name'], action_json['method'], action_json['condition'], action_json['successor'])
+                    p = action_json['predecessor'] if 'predecessor' in action_json else None
+                    game_action = GameAction(action_json['name'], action_json['method'],
+                                             action_json['condition'], action_json['successor'], p)
                     game_state.add_action(game_action)
                 game_config.add_state(game_state)
             game_config.build_graph()
@@ -78,19 +81,22 @@ def read_game_config_file(config_dir, config_name):
 
 
 class GameAction:
-    def __init__(self, name, method, condition, successor):
+    def __init__(self, name, method, condition, successor, predecessor=None):
         """
 
         :param name: action name
         :param method: action active method: click or swipe
         :param condition: condition picture for finding the clicking position
         :param successor: next state name
+        :param predecessor: action only be executed when the previous status is predecessor if presented
+                            will be checked when finding the shortest path for execution
         """
         self.name = name
         self.method = method
         self.condition = condition
         self.successor = successor
         self.data_dir = ''
+        self.predecessor = predecessor
 
     def __str__(self) -> str:
         return '{0}|{1}|{2}|{3}'.format(self.name, self.method, self.condition, self.successor)
@@ -166,6 +172,9 @@ class GameConfig:
                 self.graph.add_edge(state_name, action.successor, action=action.name, weight=1)
 
     def get_shortest_action_list(self, source_state, target_state) -> List[GameAction]:
+        """
+        abandon due to the lack of the predecessor
+        """
         action_list = []
         path_list = nx.algorithms.shortest_paths.shortest_path(self.graph, source_state, target_state, weight='weight')
         for i in range(0, len(path_list) - 1):
@@ -177,6 +186,9 @@ class GameConfig:
         return action_list
 
     def get_shortest_action_list_dijkstra(self, source_state, target_state) -> List[GameAction]:
+        """
+        abandon due to the lack of the predecessor
+        """
         action_list = []
         adj = {}
         dis = {}
@@ -234,6 +246,66 @@ class GameConfig:
             action_list.reverse()
         logger.info('Path {0} -> {1}: {2}'.format(source_state, target_state, action_list))
         return action_list
+
+    def get_shortest_action_list_with_predecessor(self, source_state, target_state, must_have_states=[]) -> List[GameAction]:
+        """
+        We will use BFS to search the path with the consideration of the predecessor
+        """
+        if source_state == target_state:
+            return []
+
+        class _route:
+            def __init__(self, cost, path, action_path):
+                self.cost = cost
+                self.path = path
+                self.action_path = action_path
+
+            def __lt__(self, other):
+                return self.cost < other.cost
+
+            def walk(self, weight, next_point, action_id):
+                if next_point in self.path:
+                    return None
+                t_path = self.path[:]
+                t_path.append(next_point)
+                t_action_path = self.action_path[:]
+                t_action_path.append(action_id)
+                return _route(self.cost + weight, t_path, t_action_path)
+
+            def last(self):
+                return self.path[-1]
+
+            def predecessor(self):
+                return self.path[-2] if len(self.path) >= 2 else None
+
+            def check_must_have(self, must_have_states):
+                for s in must_have_states:
+                    if s not in self.path:
+                        return False
+                return True
+
+        q = queue.PriorityQueue()
+        q.put(_route(0, [source_state], []))
+        result = None
+        while not q.empty() and not result:
+            r = q.get()
+            for u, v, d in self.graph.edges.data():
+                if u != r.last():
+                    continue
+                p = r.predecessor()
+                n = None
+                t_action = self.game_action_dict[d['action']]
+                if not t_action.predecessor or not p or t_action.predecessor == p:
+                    n = r.walk(1, v, t_action)
+                if n:
+                    q.put(n)
+                    if v == target_state and n.check_must_have(must_have_states):
+                        result = n
+        if not result:
+            raise NoPathFindException('From {0} to {1} with must_have {2}'
+                                      .format(source_state, target_state, must_have_states))
+        else:
+            return result.action_path
 
     def check_current_state(self, wanted_state, src_img) -> bool:
         if wanted_state not in self.game_state_dict:
