@@ -44,6 +44,9 @@ class StatusDashboard(QWidget):
             status_name = status.name
         self.curr_status_label.setText(status_name)
 
+    def set_current_status_text(self, status_name):
+        self.curr_status_label.setText(status_name)
+
     def set_current_action(self, action_name):
         self.curr_action_label.setText(action_name)
 
@@ -64,7 +67,7 @@ class StatusWindow(QWidget):
 
     def set_current_screenshot(self, img_dict):
         self.set_screenshot(img_dict['screenshot'])
-        self.status_widget.set_current_status('Checking')
+        self.status_widget.set_current_status_text('Checking')
 
     def set_current_status(self, game_status):
         self.status_widget.set_current_status(game_status['status'])

@@ -41,7 +41,7 @@ class AutoGameToolWindow(QWidget):
 
     def load_data(self):
         self.game_window = GameWindow('明日方舟 - MuMu模拟器')
-        self.game_executor = Executor(game_config=self.game_databases['Arknights'], game_window=self.game_window)
+        self.game_executor = Executor(game_config=self.game_databases['Arknights']['1920x1080'], game_window=self.game_window)
         self.game_executor.game_state_changed.connect(self.status_widget.set_current_status)
         self.game_executor.action_executed.connect(self.status_widget.set_current_action)
         self.game_executor.screenshot_catched.connect(self.status_widget.set_current_screenshot)

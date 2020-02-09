@@ -32,19 +32,26 @@ def load_game_databases():
 
     result_dict = {}
     for game_dir in os.listdir(GAME_DATABASE_DIR):
-        if not os.path.isdir(os.path.join(GAME_DATABASE_DIR, game_dir)):
+        game_specific_path = os.path.join(GAME_DATABASE_DIR, game_dir)
+        if not os.path.isdir(game_specific_path):
             continue
 
-        game_specific_config_path = os.path.join(GAME_DATABASE_DIR, game_dir, GAME_CONFIG_FILENAME)
-        if not os.path.exists(game_specific_config_path) or not os.path.isfile(game_specific_config_path):
-            logger.info('Not exist or illegal config.json in game ' + game_dir)
-            continue
+        for resolution in os.listdir(game_specific_path):
+            resolution_path = os.path.join(game_specific_path, resolution)
+            if not os.path.isdir(resolution_path):
+                continue
+            game_specific_config_path = os.path.join(resolution_path, GAME_CONFIG_FILENAME)
+            if not os.path.exists(game_specific_config_path) or not os.path.isfile(game_specific_config_path):
+                logger.info('Not exist or illegal config.json in game ' + game_dir)
+                continue
 
-        try:
-            logger.info('loading game ' + game_dir)
-            result_dict[game_dir] = read_game_config_file(os.path.join(GAME_DATABASE_DIR, game_dir), GAME_CONFIG_FILENAME)
-        except GameConfigIllegalException as e:
-            logger.debug(e)
+            try:
+                logger.info('loading game ' + game_dir)
+                if game_dir not in result_dict:
+                    result_dict[game_dir] = {}
+                result_dict[game_dir][resolution] = read_game_config_file(resolution_path, GAME_CONFIG_FILENAME)
+            except GameConfigIllegalException as e:
+                logger.debug(e)
     return result_dict
 
 
