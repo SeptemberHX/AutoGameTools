@@ -12,6 +12,8 @@ import win32api
 import win32con
 import win32gui
 import win32ui
+import aircv as ac
+
 from mss import mss
 
 from auto_module.constant import DIRECTION
@@ -40,6 +42,19 @@ def get_game_frame(x, y, width, height):
     return img
 
 
+def get_matched_area_aircv(src_image, target_image):
+    r = ac.find_sift(target_image, src_image)
+    if not r:
+        return None
+
+    if r['confidence'][0] / r['confidence'][1] < MATCH_THRESHOLD:
+        return None
+    print(r)
+    x_list = sorted([x for x, y in r['rectangle']])
+    y_list = sorted([y for x, y in r['rectangle']])
+    return x_list[0], y_list[0], x_list[-1], y_list[-1]
+
+
 def get_matched_area(src_image, target_image):
     """
     Get the position of the target_image in the src_image,
@@ -48,21 +63,9 @@ def get_matched_area(src_image, target_image):
     :param target_image: template
     :return: left, top, right, bottom
     """
-    contain_flag = False
     result = cv2.matchTemplate(src_image, target_image, cv2.TM_CCOEFF_NORMED)
-    # loc = np.where(result >= MATCH_THRESHOLD)
     # w, h = target_image.shape[::-1]
     w, h = target_image.shape[1], target_image.shape[0]
-    # for pt in zip(*loc[::-1]):
-    #     contain_flag = True
-    #     break
-    #     cv2.rectangle(src_image, pt, (pt[0] + w, pt[1] + h), (7, 249, 151), 2)
-    # if contain_flag:
-    #     cv2.imshow('Detected', src_image)
-    #     cv2.waitKey(0)
-    #     cv2.destroyAllWindows()
-    # logger.info('==> Run area match function <==')
-    # if contain_flag:
     min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
     if max_val > MATCH_THRESHOLD:
         return max_loc[0], max_loc[1], w + max_loc[0], h + max_loc[1]
