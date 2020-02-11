@@ -3,26 +3,6 @@
   "title": "明日方舟 - MuMu模拟器",
   "states": [
     {
-      "name": "公告",
-      "condition": "announcement.png",
-      "type": "normal",
-      "actions": [
-        {
-          "name": "action01",
-          "method": "click",
-          "condition": "announcement_close.png",
-          "successor": "主页"
-        }
-      ]
-    },
-    {
-      "name": "主页",
-      "condition": "home_mark.png",
-      "type": "normal",
-      "actions": [
-      ]
-    },
-    {
       "name": "LS-3选中",
       "condition": "LS-3.png",
       "type": "normal",
@@ -32,6 +12,12 @@
           "method": "click",
           "condition": "开始行动.png",
           "successor": "行动配置"
+        },
+        {
+          "name": "LS-3选中->战术演习",
+          "method": "click",
+          "condition": "返回.png",
+          "successor": "战术演习"
         }
       ]
     },
@@ -128,7 +114,7 @@
         }
       ]
     },
-      {
+    {
       "name": "CE-3选中",
       "condition": "CE-3.png",
       "type": "normal",
@@ -158,28 +144,6 @@
           "condition": "行动结束.png",
           "successor": "_NEED_IDENTIFY"
         }
-      ]
-    },
-
-    {
-      "name": "异卵同生",
-      "condition": "2-.png|!开始行动.png",
-      "type": "horizontal_swipe",
-      "actions": [
-        {
-          "name": "异卵同生->S2-4选中",
-          "method": "click",
-          "condition": "S2-4.png",
-          "successor": "S2-4选中"
-        }
-      ]
-    },
-    {
-      "name": "S2-4选中",
-      "condition": "S2-4.png",
-      "type": "normal",
-      "actions": [
-
       ]
     }
   ]

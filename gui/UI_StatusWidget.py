@@ -1,0 +1,178 @@
+# -*- coding: utf-8 -*-
+
+# Form implementation generated from reading ui file 'UI_StatusWidget.ui'
+#
+# Created by: PyQt5 UI code generator 5.14.1
+#
+# WARNING! All changes made in this file will be lost!
+
+
+from PyQt5 import QtCore, QtGui, QtWidgets
+
+
+class Ui_StatusWidget(object):
+    def setupUi(self, StatusWidget):
+        StatusWidget.setObjectName("StatusWidget")
+        StatusWidget.resize(2022, 1045)
+        font = QtGui.QFont()
+        font.setFamily("Arial")
+        font.setPointSize(14)
+        StatusWidget.setFont(font)
+        StatusWidget.setStyleSheet(".QGroupBox {\n"
+"    font-size: 28px;\n"
+"    font-weight: bold;\n"
+"    color: rgb(0, 0, 0);\n"
+"}\n"
+"\n"
+"#groupbox {\n"
+"    border-width: 1px;\n"
+"}")
+        self.verticalLayout = QtWidgets.QVBoxLayout(StatusWidget)
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.groupBox = QtWidgets.QGroupBox(StatusWidget)
+        self.groupBox.setStyleSheet("QGroupBox#groupbox {\n"
+"    border: 1px solid gray;\n"
+"    border-radius: 9px;\n"
+"    margin-top: 0.5em;\n"
+"}")
+        self.groupBox.setFlat(False)
+        self.groupBox.setObjectName("groupBox")
+        self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.groupBox)
+        self.verticalLayout_2.setObjectName("verticalLayout_2")
+        self.game_groupbox = QtWidgets.QGroupBox(self.groupBox)
+        self.game_groupbox.setObjectName("game_groupbox")
+        self.horizontalLayout = QtWidgets.QHBoxLayout(self.game_groupbox)
+        self.horizontalLayout.setObjectName("horizontalLayout")
+        self.groupBox_6 = QtWidgets.QGroupBox(self.game_groupbox)
+        self.groupBox_6.setObjectName("groupBox_6")
+        self.horizontalLayout_3 = QtWidgets.QHBoxLayout(self.groupBox_6)
+        self.horizontalLayout_3.setObjectName("horizontalLayout_3")
+        self.window_chosen_combo_box = QtWidgets.QComboBox(self.groupBox_6)
+        self.window_chosen_combo_box.setObjectName("window_chosen_combo_box")
+        self.horizontalLayout_3.addWidget(self.window_chosen_combo_box)
+        self.window_chosen_refresh_button = QtWidgets.QToolButton(self.groupBox_6)
+        self.window_chosen_refresh_button.setObjectName("window_chosen_refresh_button")
+        self.horizontalLayout_3.addWidget(self.window_chosen_refresh_button)
+        self.horizontalLayout.addWidget(self.groupBox_6)
+        self.groupBox_5 = QtWidgets.QGroupBox(self.game_groupbox)
+        self.groupBox_5.setObjectName("groupBox_5")
+        self.horizontalLayout_4 = QtWidgets.QHBoxLayout(self.groupBox_5)
+        self.horizontalLayout_4.setObjectName("horizontalLayout_4")
+        self.game_combobox = QtWidgets.QComboBox(self.groupBox_5)
+        self.game_combobox.setObjectName("game_combobox")
+        self.horizontalLayout_4.addWidget(self.game_combobox)
+        self.horizontalLayout.addWidget(self.groupBox_5)
+        self.groupBox_4 = QtWidgets.QGroupBox(self.game_groupbox)
+        self.groupBox_4.setObjectName("groupBox_4")
+        self.horizontalLayout_5 = QtWidgets.QHBoxLayout(self.groupBox_4)
+        self.horizontalLayout_5.setObjectName("horizontalLayout_5")
+        self.resolution_combobox = QtWidgets.QComboBox(self.groupBox_4)
+        self.resolution_combobox.setObjectName("resolution_combobox")
+        self.horizontalLayout_5.addWidget(self.resolution_combobox)
+        self.horizontalLayout.addWidget(self.groupBox_4)
+        self.verticalLayout_2.addWidget(self.game_groupbox)
+        self.widget_2 = QtWidgets.QWidget(self.groupBox)
+        self.widget_2.setObjectName("widget_2")
+        self.horizontalLayout_7 = QtWidgets.QHBoxLayout(self.widget_2)
+        self.horizontalLayout_7.setObjectName("horizontalLayout_7")
+        self.status_groupbox = QtWidgets.QGroupBox(self.widget_2)
+        self.status_groupbox.setObjectName("status_groupbox")
+        self.horizontalLayout_6 = QtWidgets.QHBoxLayout(self.status_groupbox)
+        self.horizontalLayout_6.setObjectName("horizontalLayout_6")
+        self.groupBox_10 = QtWidgets.QGroupBox(self.status_groupbox)
+        self.groupBox_10.setObjectName("groupBox_10")
+        self.verticalLayout_6 = QtWidgets.QVBoxLayout(self.groupBox_10)
+        self.verticalLayout_6.setObjectName("verticalLayout_6")
+        self.from_combobox = QtWidgets.QComboBox(self.groupBox_10)
+        self.from_combobox.setObjectName("from_combobox")
+        self.verticalLayout_6.addWidget(self.from_combobox)
+        self.horizontalLayout_6.addWidget(self.groupBox_10)
+        self.groupBox_11 = QtWidgets.QGroupBox(self.status_groupbox)
+        self.groupBox_11.setObjectName("groupBox_11")
+        self.verticalLayout_7 = QtWidgets.QVBoxLayout(self.groupBox_11)
+        self.verticalLayout_7.setObjectName("verticalLayout_7")
+        self.to_combobox = QtWidgets.QComboBox(self.groupBox_11)
+        self.to_combobox.setObjectName("to_combobox")
+        self.verticalLayout_7.addWidget(self.to_combobox)
+        self.horizontalLayout_6.addWidget(self.groupBox_11)
+        self.groupBox_12 = QtWidgets.QGroupBox(self.status_groupbox)
+        self.groupBox_12.setObjectName("groupBox_12")
+        self.verticalLayout_8 = QtWidgets.QVBoxLayout(self.groupBox_12)
+        self.verticalLayout_8.setObjectName("verticalLayout_8")
+        self.must_combobox = QtWidgets.QComboBox(self.groupBox_12)
+        self.must_combobox.setObjectName("must_combobox")
+        self.verticalLayout_8.addWidget(self.must_combobox)
+        self.horizontalLayout_6.addWidget(self.groupBox_12)
+        self.horizontalLayout_7.addWidget(self.status_groupbox)
+        self.start_button = QtWidgets.QPushButton(self.widget_2)
+        self.start_button.setObjectName("start_button")
+        self.horizontalLayout_7.addWidget(self.start_button)
+        self.stop_button = QtWidgets.QPushButton(self.widget_2)
+        self.stop_button.setObjectName("stop_button")
+        self.horizontalLayout_7.addWidget(self.stop_button)
+        self.verticalLayout_2.addWidget(self.widget_2)
+        self.verticalLayout.addWidget(self.groupBox)
+        self.groupBox_7 = QtWidgets.QGroupBox(StatusWidget)
+        self.groupBox_7.setStyleSheet("#groupbox_7 {\n"
+"border-width: 1px;\n"
+"border-color: rgb(99, 99, 99);\n"
+"border-style: solid;\n"
+"}")
+        self.groupBox_7.setObjectName("groupBox_7")
+        self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.groupBox_7)
+        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
+        self.groupBox_8 = QtWidgets.QGroupBox(self.groupBox_7)
+        self.groupBox_8.setObjectName("groupBox_8")
+        self.verticalLayout_3 = QtWidgets.QVBoxLayout(self.groupBox_8)
+        self.verticalLayout_3.setObjectName("verticalLayout_3")
+        self.screen_label = QtWidgets.QLabel(self.groupBox_8)
+        self.screen_label.setMinimumSize(QtCore.QSize(1280, 720))
+        self.screen_label.setMaximumSize(QtCore.QSize(1280, 720))
+        self.screen_label.setObjectName("screen_label")
+        self.verticalLayout_3.addWidget(self.screen_label)
+        self.horizontalLayout_2.addWidget(self.groupBox_8)
+        self.widget = QtWidgets.QWidget(self.groupBox_7)
+        self.widget.setObjectName("widget")
+        self.verticalLayout_4 = QtWidgets.QVBoxLayout(self.widget)
+        self.verticalLayout_4.setObjectName("verticalLayout_4")
+        self.groupBox_9 = QtWidgets.QGroupBox(self.widget)
+        self.groupBox_9.setObjectName("groupBox_9")
+        self.verticalLayout_5 = QtWidgets.QVBoxLayout(self.groupBox_9)
+        self.verticalLayout_5.setObjectName("verticalLayout_5")
+        self.prev_screen_label = QtWidgets.QLabel(self.groupBox_9)
+        self.prev_screen_label.setMinimumSize(QtCore.QSize(640, 360))
+        self.prev_screen_label.setMaximumSize(QtCore.QSize(640, 360))
+        self.prev_screen_label.setObjectName("prev_screen_label")
+        self.verticalLayout_5.addWidget(self.prev_screen_label)
+        self.verticalLayout_4.addWidget(self.groupBox_9)
+        self.status_table = QtWidgets.QTableWidget(self.widget)
+        self.status_table.setObjectName("status_table")
+        self.status_table.setColumnCount(0)
+        self.status_table.setRowCount(0)
+        self.verticalLayout_4.addWidget(self.status_table)
+        self.horizontalLayout_2.addWidget(self.widget)
+        self.verticalLayout.addWidget(self.groupBox_7)
+
+        self.retranslateUi(StatusWidget)
+        QtCore.QMetaObject.connectSlotsByName(StatusWidget)
+
+    def retranslateUi(self, StatusWidget):
+        _translate = QtCore.QCoreApplication.translate
+        StatusWidget.setWindowTitle(_translate("StatusWidget", "Form"))
+        self.groupBox.setTitle(_translate("StatusWidget", "Run configuration"))
+        self.game_groupbox.setTitle(_translate("StatusWidget", "Game Settings"))
+        self.groupBox_6.setTitle(_translate("StatusWidget", "Game Window"))
+        self.window_chosen_refresh_button.setText(_translate("StatusWidget", "R"))
+        self.groupBox_5.setTitle(_translate("StatusWidget", "Game Name"))
+        self.groupBox_4.setTitle(_translate("StatusWidget", "Window Resolution"))
+        self.status_groupbox.setTitle(_translate("StatusWidget", "Executing Path"))
+        self.groupBox_10.setTitle(_translate("StatusWidget", "From"))
+        self.groupBox_11.setTitle(_translate("StatusWidget", "To"))
+        self.groupBox_12.setTitle(_translate("StatusWidget", "Must"))
+        self.start_button.setText(_translate("StatusWidget", "Start"))
+        self.stop_button.setText(_translate("StatusWidget", "Stop"))
+        self.groupBox_7.setTitle(_translate("StatusWidget", "Run-time Dashboard"))
+        self.groupBox_8.setTitle(_translate("StatusWidget", "Current Screenshot"))
+        self.screen_label.setText(_translate("StatusWidget", "Waiting for screenshot..."))
+        self.groupBox_9.setTitle(_translate("StatusWidget", "Previous Screenshot"))
+        self.prev_screen_label.setText(_translate("StatusWidget", "Waiting for screenshot..."))

@@ -5,8 +5,8 @@ import json
 import math
 import queue
 import networkx as nx
-import matplotlib.pyplot as plt
 
+from auto_module.constant import STATE_TYPE
 from auto_module.exception import DatabaseIllegalException, GameConfigIllegalException, NoPathFindException
 from auto_module.image import get_resource_img, check_contain_img, get_matched_area
 from auto_module.logger import get_logger
@@ -73,7 +73,8 @@ def read_game_config_file(config_dir, config_name):
                 game_title=config_json['title'],
             )
             for state_json in config_json['states']:
-                game_state = GameState(state_json['name'], state_json['condition'], game_config.game_config_dir, state_json['type'])
+                game_state = GameState(state_json['name'], state_json['condition'], game_config.game_config_dir,
+                                       state_json['type'])
                 for action_json in state_json['actions']:
                     p = action_json['predecessor'] if 'predecessor' in action_json else None
                     game_action = GameAction(action_json['name'], action_json['method'],
@@ -81,7 +82,7 @@ def read_game_config_file(config_dir, config_name):
                     game_state.add_action(game_action)
                 game_config.add_state(game_state)
             game_config.build_graph()
-            game_config.draw_graph()
+            # game_config.draw_graph()
             return game_config
     except Exception as e:
         raise GameConfigIllegalException(e)
@@ -107,7 +108,7 @@ class GameAction:
 
     def __str__(self) -> str:
         return '{0}|{1}|{2}|{3}'.format(self.name, self.method, self.condition, self.successor)
-    
+
     def __repr__(self) -> str:
         return self.__str__()
 
@@ -185,10 +186,10 @@ class GameConfig:
         action_list = []
         path_list = nx.algorithms.shortest_paths.shortest_path(self.graph, source_state, target_state, weight='weight')
         for i in range(0, len(path_list) - 1):
-            edge_data = self.graph.get_edge_data(path_list[i], path_list[i+1])
+            edge_data = self.graph.get_edge_data(path_list[i], path_list[i + 1])
             action = self.game_action_dict[edge_data['action']]
             action_list.append(action)
-            logger.info('{0}->{1}: {2}'.format(path_list[i], path_list[i+1], action))
+            logger.info('{0}->{1}: {2}'.format(path_list[i], path_list[i + 1], action))
 
         return action_list
 
@@ -244,17 +245,18 @@ class GameConfig:
             curr_state = target_state
             while curr_state in parents_node:
                 action_list.append(self.game_action_dict[
-                    self.graph.get_edge_data(parents_node[curr_state], curr_state)['action']
-                ])
+                                       self.graph.get_edge_data(parents_node[curr_state], curr_state)['action']
+                                   ])
                 curr_state = parents_node[curr_state]
             action_list.append(self.game_action_dict[
-                self.graph.get_edge_data(source_state, curr_state)['action']
-            ])
+                                   self.graph.get_edge_data(source_state, curr_state)['action']
+                               ])
             action_list.reverse()
         logger.info('Path {0} -> {1}: {2}'.format(source_state, target_state, action_list))
         return action_list
 
-    def get_shortest_action_list_with_predecessor(self, source_state, target_state, must_have_states=[]) -> List[GameAction]:
+    def get_shortest_action_list_with_predecessor(self, source_state, target_state, must_have_states=[]) -> List[
+        GameAction]:
         """
         We will use BFS to search the path with the consideration of the predecessor
         """
@@ -319,15 +321,25 @@ class GameConfig:
             return False
         return self.game_state_dict[wanted_state].check_if_conditions_met(src_img)
 
-    def draw_graph(self):
-        edge_label_dict = {}
+    def get_d3_data(self):
+        nodes = []
+        group_dict = {
+            STATE_TYPE['NORMAL']: 0,
+            STATE_TYPE['JUMP']: 1,
+            STATE_TYPE['HORIZONTAL_SWIPE']: 2,
+            STATE_TYPE['VERTICAL_SWIPE']: 3,
+            STATE_TYPE['NEED_IDENTIFY']: 4
+        }
+        for n in self.graph.nodes():
+            nodes.append({
+                'id': n,
+                'group': group_dict[self.game_state_dict[n].type]
+            })
+        links = []
         for u, v, n in self.graph.edges.data('action'):
-            edge_label_dict[(u, v)] = n
-
-        plt.rcParams['font.sans-serif'] = ['SimHei']
-        plt.subplot(121)
-        pos = nx.spring_layout(self.graph, k=5, scale=3)
-        nx.draw(self.graph, pos, with_labels=True, edge_color='black',
-                width=1, linewidths=1, node_size=500, node_color='pink', alpha=0.9)
-        nx.draw_networkx_edge_labels(self.graph, pos, edge_labels=edge_label_dict, font_color='red')
-        plt.show()
+            links.append({
+                'source': u,
+                'target': v,
+                'value': n
+            })
+        return {'nodes': nodes, 'links': links}

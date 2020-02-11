@@ -1,6 +1,7 @@
 # encoding: utf-8
 
 import ctypes
+import datetime
 import time
 
 import numpy
@@ -12,7 +13,6 @@ import win32api
 import win32con
 import win32gui
 import win32ui
-import aircv as ac
 
 from mss import mss
 
@@ -42,17 +42,17 @@ def get_game_frame(x, y, width, height):
     return img
 
 
-def get_matched_area_aircv(src_image, target_image):
-    r = ac.find_sift(target_image, src_image)
-    if not r:
-        return None
-
-    if r['confidence'][0] / r['confidence'][1] < MATCH_THRESHOLD:
-        return None
-    print(r)
-    x_list = sorted([x for x, y in r['rectangle']])
-    y_list = sorted([y for x, y in r['rectangle']])
-    return x_list[0], y_list[0], x_list[-1], y_list[-1]
+# def get_matched_area_aircv(src_image, target_image):
+#     r = ac.find_sift(target_image, src_image)
+#     if not r:
+#         return None
+#
+#     if r['confidence'][0] / r['confidence'][1] < MATCH_THRESHOLD:
+#         return None
+#     print(r)
+#     x_list = sorted([x for x, y in r['rectangle']])
+#     y_list = sorted([y for x, y in r['rectangle']])
+#     return x_list[0], y_list[0], x_list[-1], y_list[-1]
 
 
 def get_matched_area(src_image, target_image):

@@ -21,11 +21,13 @@ class Executor(QObject):
     game_state_changed = pyqtSignal(dict)
     action_executed = pyqtSignal(str)
     screenshot_catched = pyqtSignal(dict)
+    exception_happened = pyqtSignal(str)
 
     def __init__(self, game_config: GameConfig, game_window: GameWindow):
         super().__init__()
         self.game_config = game_config
         self.game_window = game_window
+        self.status_hit_dict = {}
 
     def debug_judge_state(self):
         while True:
@@ -44,55 +46,59 @@ class Executor(QObject):
         from_state != real current state is allowed
         the state when this function finishes is guaranteed to be to_state
         """
-        logger.info('In execute_to({0}, {1})'.format(from_state, to_state))
-        state_id, _ = self.get_valid_state(from_state)
-        if self.game_config.game_state_dict[state_id].type not in DIRECT_STATE_TYPE and to_state != RESERVED_STATE['NEED_IDENTIFY']:
-            state_id, _ = self.handle_abnormal_state(state_id)
+        try:
+            logger.info('In execute_to({0}, {1})'.format(from_state, to_state))
+            state_id, _ = self.get_valid_state(from_state)
+            if self.game_config.game_state_dict[state_id].type not in DIRECT_STATE_TYPE and to_state != RESERVED_STATE['NEED_IDENTIFY']:
+                state_id, _ = self.handle_abnormal_state(state_id)
 
-        action_list = self.game_config.get_shortest_action_list_with_predecessor(from_state, to_state, must_have_states)
-        curr_state = from_state
-        game_img = None
-        for action in action_list:
-            logger.info('trying to move from {0} to {1}...'.format(curr_state, action.successor))
-            if state_id == to_state:
-                break
-
-            # while state_id != curr_state and game_config.game_state_dict[state_id].type not in DIRECT_STATE_TYPE:
-            #     state_id, game_img = handle_abnormal_state(game_config, game_window, state_id)
-
-            while state_id != curr_state:
-                logger.info('current status not match, trying to correct it')
-                state_id, game_img = self.execute_to(state_id, curr_state)
-
-            # do the action to move on to the next state
-            logger.info('move from {0} to {1}'.format(curr_state, action.successor))
-            while state_id != action.successor:
-                logger.info('Executing action {0}...'.format(action.name))
-                self.execute_action(self.game_config.game_state_dict[curr_state], action)
-                time.sleep(SCT_INTERVAL)
-                state_id, game_img = self.get_valid_state(action.successor)
-                if state_id == action.successor:
+            action_list = self.game_config.get_shortest_action_list_with_predecessor(from_state, to_state, must_have_states)
+            curr_state = from_state
+            game_img = None
+            for action in action_list:
+                logger.info('trying to move from {0} to {1}...'.format(curr_state, action.successor))
+                if state_id == to_state:
                     break
+
+                # while state_id != curr_state and game_config.game_state_dict[state_id].type not in DIRECT_STATE_TYPE:
+                #     state_id, game_img = handle_abnormal_state(game_config, game_window, state_id)
+
+                while state_id != curr_state:
+                    logger.info('current status not match, trying to correct it')
+                    state_id, game_img = self.execute_to(state_id, curr_state)
+
+                # do the action to move on to the next state
+                logger.info('move from {0} to {1}'.format(curr_state, action.successor))
+                while state_id != action.successor:
+                    logger.info('Executing action {0}...'.format(action.name))
+                    self.execute_action(self.game_config.game_state_dict[curr_state], action)
+                    time.sleep(SCT_INTERVAL)
+                    state_id, game_img = self.get_valid_state(action.successor)
+                    if state_id == action.successor:
+                        break
+                    if self.game_config.game_state_dict[state_id].type not in DIRECT_STATE_TYPE:
+                        state_id, game_img = self.handle_abnormal_state(state_id)
+                    if state_id != action.successor and to_state == RESERVED_STATE['NEED_IDENTIFY']:
+                        break
+                    if state_id != curr_state and state_id != action.successor \
+                            and self.game_config.game_state_dict[state_id].type in DIRECT_STATE_TYPE:
+                        self.execute_to(state_id, action.successor)
+
+                logger.info('Action {0} finished'.format(action.name))
+                logger.info('move from {0} to {1} finished'.format(curr_state, action.successor))
+                curr_state = action.successor
+
+            while to_state != RESERVED_STATE['NEED_IDENTIFY'] and state_id != to_state:
+                logger.info('Trying to solve unmatched to_state {0}...'.format(state_id))
                 if self.game_config.game_state_dict[state_id].type not in DIRECT_STATE_TYPE:
                     state_id, game_img = self.handle_abnormal_state(state_id)
-                if state_id != action.successor and to_state == RESERVED_STATE['NEED_IDENTIFY']:
-                    break
-                if state_id != curr_state and state_id != action.successor \
-                        and self.game_config.game_state_dict[state_id].type in DIRECT_STATE_TYPE:
-                    self.execute_to(state_id, action.successor)
-
-            logger.info('Action {0} finished'.format(action.name))
-            logger.info('move from {0} to {1} finished'.format(curr_state, action.successor))
-            curr_state = action.successor
-
-        while to_state != RESERVED_STATE['NEED_IDENTIFY'] and state_id != to_state:
-            logger.info('Trying to solve unmatched to_state {0}...'.format(state_id))
-            if self.game_config.game_state_dict[state_id].type not in DIRECT_STATE_TYPE:
-                state_id, game_img = self.handle_abnormal_state(state_id)
-            else:
-                raise CannotMoveForwardException(state_id)
-        logger.info('Execute from {0} to {1} finished'.format(from_state, to_state))
-        return state_id, game_img
+                else:
+                    raise CannotMoveForwardException('Cannot move from status {0}!!!'.format(state_id))
+            logger.info('Execute from {0} to {1} finished'.format(from_state, to_state))
+            return state_id, game_img
+        except Exception as e:
+            self.exception_happened.emit(e.msg)
+            raise e
 
     def wait_until_screen_change(self, src_img):
         logger.info('Wait until screen change...')
@@ -136,13 +142,34 @@ class Executor(QObject):
             return self.execute_to(game_state, RESERVED_STATE['NEED_IDENTIFY'])
 
     def judge_state(self, game_img, potential_status_name=None):
+        result = None
         if potential_status_name:
             if self.game_config.game_state_dict[potential_status_name].check_if_conditions_met(game_img):
-                return potential_status_name
-        for game_state_id, game_state in self.game_config.game_state_dict.items():
-            if game_state.check_if_conditions_met(game_img):
-                return game_state_id
-        return None
+                result = potential_status_name
+
+        if result is None:
+            sorted_list = sorted(self.status_hit_dict.items(), key=lambda x: x[1])
+            visited_set = set(potential_status_name)
+            for s, _ in sorted_list:
+                if s not in visited_set:
+                    if self.game_config.game_state_dict[s].check_if_conditions_met(game_img):
+                        result = s
+                        break
+                    visited_set.add(s)
+
+            for game_state_id, game_state in self.game_config.game_state_dict.items():
+                if game_state_id in visited_set:
+                    continue
+                visited_set.add(game_state_id)
+                if game_state.check_if_conditions_met(game_img):
+                    result = game_state_id
+                    break
+
+        if result is not None:
+            if result not in self.status_hit_dict:
+                self.status_hit_dict[result] = 0
+            self.status_hit_dict[result] += 1
+        return result
 
     def execute_action(self, game_state: GameState, game_action: GameAction):
         self.action_executed.emit(game_action.name)
