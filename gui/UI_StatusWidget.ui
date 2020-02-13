@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>2022</width>
-    <height>1045</height>
+    <width>1144</width>
+    <height>871</height>
    </rect>
   </property>
   <property name="font">
@@ -20,17 +20,9 @@
    <string>Form</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">.QGroupBox {
-    font-size: 28px;
-    font-weight: bold;
-	color: rgb(0, 0, 0);
-}
-
-#groupbox {
-	border-width: 1px;
-}</string>
+   <string notr="true"/>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
+  <layout class="QHBoxLayout" name="horizontalLayout">
    <item>
     <widget class="QGroupBox" name="groupBox">
      <property name="styleSheet">
@@ -49,10 +41,86 @@
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
        <widget class="QGroupBox" name="game_groupbox">
+        <property name="font">
+         <font>
+          <pointsize>10</pointsize>
+         </font>
+        </property>
         <property name="title">
          <string>Game Settings</string>
         </property>
-        <layout class="QHBoxLayout" name="horizontalLayout">
+        <layout class="QVBoxLayout" name="verticalLayout_9">
+         <item>
+          <widget class="QWidget" name="widget_3" native="true">
+           <layout class="QHBoxLayout" name="horizontalLayout_7">
+            <property name="spacing">
+             <number>2</number>
+            </property>
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QGroupBox" name="groupBox_5">
+              <property name="title">
+               <string>Game Name</string>
+              </property>
+              <layout class="QHBoxLayout" name="horizontalLayout_4">
+               <item>
+                <widget class="QComboBox" name="game_combobox">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>16777215</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
+             <widget class="QGroupBox" name="groupBox_4">
+              <property name="title">
+               <string>Window Resolution</string>
+              </property>
+              <layout class="QHBoxLayout" name="horizontalLayout_5">
+               <item>
+                <widget class="QComboBox" name="resolution_combobox">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>16777215</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
          <item>
           <widget class="QGroupBox" name="groupBox_6">
            <property name="title">
@@ -60,38 +128,33 @@
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_3">
             <item>
-             <widget class="QComboBox" name="window_chosen_combo_box"/>
+             <widget class="QComboBox" name="window_chosen_combo_box">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>350</width>
+                <height>16777215</height>
+               </size>
+              </property>
+             </widget>
             </item>
             <item>
              <widget class="QToolButton" name="window_chosen_refresh_button">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>0</height>
+               </size>
+              </property>
               <property name="text">
                <string>R</string>
               </property>
              </widget>
-            </item>
-           </layout>
-          </widget>
-         </item>
-         <item>
-          <widget class="QGroupBox" name="groupBox_5">
-           <property name="title">
-            <string>Game Name</string>
-           </property>
-           <layout class="QHBoxLayout" name="horizontalLayout_4">
-            <item>
-             <widget class="QComboBox" name="game_combobox"/>
-            </item>
-           </layout>
-          </widget>
-         </item>
-         <item>
-          <widget class="QGroupBox" name="groupBox_4">
-           <property name="title">
-            <string>Window Resolution</string>
-           </property>
-           <layout class="QHBoxLayout" name="horizontalLayout_5">
-            <item>
-             <widget class="QComboBox" name="resolution_combobox"/>
             </item>
            </layout>
           </widget>
@@ -101,21 +164,61 @@
       </item>
       <item>
        <widget class="QWidget" name="widget_2" native="true">
-        <layout class="QHBoxLayout" name="horizontalLayout_7">
+        <property name="font">
+         <font>
+          <pointsize>10</pointsize>
+         </font>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
          <item>
           <widget class="QGroupBox" name="status_groupbox">
            <property name="title">
             <string>Executing Path</string>
            </property>
-           <layout class="QHBoxLayout" name="horizontalLayout_6">
+           <layout class="QVBoxLayout" name="verticalLayout_4">
             <item>
              <widget class="QGroupBox" name="groupBox_10">
               <property name="title">
-               <string>From</string>
+               <string/>
               </property>
-              <layout class="QVBoxLayout" name="verticalLayout_6">
+              <layout class="QHBoxLayout" name="horizontalLayout_6">
                <item>
-                <widget class="QComboBox" name="from_combobox"/>
+                <widget class="QLabel" name="label">
+                 <property name="maximumSize">
+                  <size>
+                   <width>100</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>From</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QComboBox" name="from_combobox">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                </widget>
                </item>
               </layout>
              </widget>
@@ -123,11 +226,34 @@
             <item>
              <widget class="QGroupBox" name="groupBox_11">
               <property name="title">
-               <string>To</string>
+               <string/>
               </property>
-              <layout class="QVBoxLayout" name="verticalLayout_7">
+              <layout class="QHBoxLayout" name="horizontalLayout_8">
                <item>
-                <widget class="QComboBox" name="to_combobox"/>
+                <widget class="QLabel" name="label_3">
+                 <property name="maximumSize">
+                  <size>
+                   <width>100</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>To</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QComboBox" name="to_combobox">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                </widget>
                </item>
               </layout>
              </widget>
@@ -135,11 +261,34 @@
             <item>
              <widget class="QGroupBox" name="groupBox_12">
               <property name="title">
-               <string>Must</string>
+               <string/>
               </property>
-              <layout class="QVBoxLayout" name="verticalLayout_8">
+              <layout class="QHBoxLayout" name="horizontalLayout_9">
                <item>
-                <widget class="QComboBox" name="must_combobox"/>
+                <widget class="QLabel" name="label_2">
+                 <property name="maximumSize">
+                  <size>
+                   <width>100</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>Must</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QComboBox" name="must_combobox">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                </widget>
                </item>
               </layout>
              </widget>
@@ -148,20 +297,33 @@
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="start_button">
-           <property name="text">
-            <string>Start</string>
+          <spacer name="verticalSpacer">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
            </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="stop_button">
-           <property name="text">
-            <string>Stop</string>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
            </property>
-          </widget>
+          </spacer>
          </item>
         </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="start_button">
+        <property name="text">
+         <string>Start</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="stop_button">
+        <property name="text">
+         <string>Stop</string>
+        </property>
        </widget>
       </item>
      </layout>
@@ -179,9 +341,14 @@ border-style: solid;
      <property name="title">
       <string>Run-time Dashboard</string>
      </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <layout class="QVBoxLayout" name="verticalLayout_10">
       <item>
        <widget class="QGroupBox" name="groupBox_8">
+        <property name="font">
+         <font>
+          <pointsize>10</pointsize>
+         </font>
+        </property>
         <property name="title">
          <string>Current Screenshot</string>
         </property>
@@ -190,14 +357,14 @@ border-style: solid;
           <widget class="QLabel" name="screen_label">
            <property name="minimumSize">
             <size>
-             <width>1280</width>
-             <height>720</height>
+             <width>800</width>
+             <height>450</height>
             </size>
            </property>
            <property name="maximumSize">
             <size>
-             <width>1280</width>
-             <height>720</height>
+             <width>800</width>
+             <height>450</height>
             </size>
            </property>
            <property name="text">
@@ -210,9 +377,14 @@ border-style: solid;
       </item>
       <item>
        <widget class="QWidget" name="widget" native="true">
-        <layout class="QVBoxLayout" name="verticalLayout_4">
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
          <item>
           <widget class="QGroupBox" name="groupBox_9">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
            <property name="title">
             <string>Previous Screenshot</string>
            </property>
@@ -221,14 +393,14 @@ border-style: solid;
              <widget class="QLabel" name="prev_screen_label">
               <property name="minimumSize">
                <size>
-                <width>640</width>
-                <height>360</height>
+                <width>480</width>
+                <height>270</height>
                </size>
               </property>
               <property name="maximumSize">
                <size>
-                <width>640</width>
-                <height>360</height>
+                <width>480</width>
+                <height>270</height>
                </size>
               </property>
               <property name="text">

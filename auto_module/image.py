@@ -74,11 +74,12 @@ def get_matched_area(src_image, target_image):
 
 
 def check_contain_img(src_img, target_img):
-    return get_matched_area(src_img, target_img) is not None
+    r = get_matched_area(src_img, target_img)
+    return r is not None, r
 
 
 def check_img_equal(src_img, target_img):
-    return check_contain_img(src_img, target_img)
+    return check_contain_img(src_img, target_img)[0]
 
 
 def get_resource_img(resource_dir_path, resource_name):
@@ -87,7 +88,7 @@ def get_resource_img(resource_dir_path, resource_name):
         logger.info('read image ' + img_path)
         img = cv2.imdecode(np.fromfile(img_path, dtype=np.uint8), cv2.IMREAD_COLOR)
         # img = cv2.imread(img_path, cv2.IMREAD_COLOR)
-        # img = cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)
+        img = cv2.cvtColor(img, cv2.COLOR_BGRA2GRAY)
         resource_img_dict[img_path] = img
     return resource_img_dict[img_path]
 
@@ -114,7 +115,7 @@ class GameWindow:
             # logger.info('screenshot shape: {0}'.format(im_opencv.shape))
 
             win32gui.DeleteObject(saveBitMap.GetHandle())
-            return cv2.cvtColor(im_opencv, cv2.COLOR_BGRA2BGR)
+            return cv2.cvtColor(im_opencv, cv2.COLOR_BGRA2GRAY)
 
     def click(self, x, y):
         logger.info('offset: ({0}, {1})'.format(x, y))

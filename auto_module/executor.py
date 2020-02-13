@@ -1,6 +1,7 @@
 # encoding: utf-8
 import time
 
+import cv2
 import numpy
 from PyQt5.QtCore import QObject, pyqtSignal
 
@@ -22,6 +23,7 @@ class Executor(QObject):
     action_executed = pyqtSignal(str)
     screenshot_catched = pyqtSignal(dict)
     exception_happened = pyqtSignal(str)
+    screenshot_status_sure = pyqtSignal(dict)
 
     def __init__(self, game_config: GameConfig, game_window: GameWindow):
         super().__init__()
@@ -97,6 +99,7 @@ class Executor(QObject):
             logger.info('Execute from {0} to {1} finished'.format(from_state, to_state))
             return state_id, game_img
         except Exception as e:
+            logger.debug(e)
             self.exception_happened.emit(e.msg)
             raise e
 
@@ -143,17 +146,22 @@ class Executor(QObject):
 
     def judge_state(self, game_img, potential_status_name=None):
         result = None
+        rect_list = None
         if potential_status_name:
-            if self.game_config.game_state_dict[potential_status_name].check_if_conditions_met(game_img):
+            r = self.game_config.game_state_dict[potential_status_name].check_if_conditions_met(game_img)
+            if r[0]:
                 result = potential_status_name
+                rect_list = r[1]
 
         if result is None:
             sorted_list = sorted(self.status_hit_dict.items(), key=lambda x: x[1])
             visited_set = set(potential_status_name)
             for s, _ in sorted_list:
                 if s not in visited_set:
-                    if self.game_config.game_state_dict[s].check_if_conditions_met(game_img):
+                    r = self.game_config.game_state_dict[s].check_if_conditions_met(game_img)
+                    if r[0]:
                         result = s
+                        rect_list = r[1]
                         break
                     visited_set.add(s)
 
@@ -161,14 +169,20 @@ class Executor(QObject):
                 if game_state_id in visited_set:
                     continue
                 visited_set.add(game_state_id)
-                if game_state.check_if_conditions_met(game_img):
+                r = game_state.check_if_conditions_met(game_img)
+                if r[0]:
                     result = game_state_id
+                    rect_list = r[1]
                     break
 
         if result is not None:
             if result not in self.status_hit_dict:
                 self.status_hit_dict[result] = 0
             self.status_hit_dict[result] += 1
+
+            for rect in rect_list:
+                cv2.rectangle(game_img, (rect[0], rect[1]), (rect[2], rect[3]), (255, 0, 0), 2)
+            self.screenshot_status_sure.emit({'screenshot': game_img})
         return result
 
     def execute_action(self, game_state: GameState, game_action: GameAction):
@@ -197,6 +211,9 @@ class Executor(QObject):
                                               .format(game_action.name, game_state.name))
             else:
                 self.execute_click_action(game_action)
+
+    def check_condition(self, game_action, curr_img):
+        return game_action.check_if_condition_met(curr_img)
 
     def execute_click_action(self, game_action: GameAction):
         game_img = self.get_screenshot()

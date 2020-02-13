@@ -10,7 +10,7 @@ from auto_module.constant import STATE_TYPE
 from auto_module.exception import DatabaseIllegalException, GameConfigIllegalException, NoPathFindException
 from auto_module.image import get_resource_img, check_contain_img, get_matched_area
 from auto_module.logger import get_logger
-from typing import List, Dict
+from typing import List, Dict, Tuple
 
 GAME_DATABASE_DIR = 'D:\Workspace\git\AutoGameTools\game_tools'
 GAME_CONFIG_FILENAME = 'config.json'
@@ -118,7 +118,7 @@ class GameAction:
 
     def check_if_condition_met(self, src_img):
         c_img = get_resource_img(self.data_dir, self.condition)
-        return check_contain_img(src_img, c_img)
+        return check_contain_img(src_img, c_img)[0]
 
 
 class GameState:
@@ -139,11 +139,12 @@ class GameState:
         game_action.data_dir = os.path.join(self.game_config_dir, self.name)
         self.action_dict[game_action.name] = game_action
 
-    def check_if_conditions_met(self, src_img) -> bool:
+    def check_if_conditions_met(self, src_img) -> Tuple[bool, list]:
         if len(self.conditions) == 0:
-            return False
+            return False, []
 
         condition_img_list = self.conditions.split('|')
+        rect_list = []
         for condition in condition_img_list:
             not_flag = False
             if condition.startswith('!'):
@@ -152,10 +153,12 @@ class GameState:
             else:
                 condition_img = condition
             c_img = get_resource_img(os.path.join(self.game_config_dir, self.name), condition_img)
-            if_contains = check_contain_img(src_img, c_img)
+            if_contains, rect = check_contain_img(src_img, c_img)
+            if if_contains:
+                rect_list.append(rect)
             if not_flag == if_contains:
-                return False
-        return True
+                return False, []
+        return True, rect_list
 
 
 class GameConfig:
@@ -315,11 +318,6 @@ class GameConfig:
                                       .format(source_state, target_state, must_have_states))
         else:
             return result.action_path
-
-    def check_current_state(self, wanted_state, src_img) -> bool:
-        if wanted_state not in self.game_state_dict:
-            return False
-        return self.game_state_dict[wanted_state].check_if_conditions_met(src_img)
 
     def get_d3_data(self):
         nodes = []

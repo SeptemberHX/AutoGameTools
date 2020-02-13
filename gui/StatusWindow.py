@@ -118,6 +118,7 @@ class StatusWindow(QWidget, Ui_StatusWidget):
         self.game_executor.game_state_changed.connect(self.set_current_status)
         self.game_executor.action_executed.connect(self.set_current_action)
         self.game_executor.screenshot_catched.connect(self.set_current_screenshot)
+        self.game_executor.screenshot_status_sure.connect(self.set_previous_screenshot)
         self.game_executor.exception_happened.connect(self.deal_with_exception)
         self.thread = RunThread(
             self.game_executor,
@@ -183,7 +184,7 @@ class StatusWindow(QWidget, Ui_StatusWidget):
         self.set_current_and_prev_status(CHECKING_STATUS)
 
     def set_current_and_prev_status(self, current_status):
-        if self.status_table.item(0, 1).text() != CHECKING_STATUS:
+        if self.status_table.item(0, 1).text() not in [CHECKING_STATUS, 'None']:
             self.status_table.item(1, 1).setText(self.status_table.item(0, 1).text())
         self.status_table.item(0, 1).setText(current_status)
 
@@ -197,11 +198,19 @@ class StatusWindow(QWidget, Ui_StatusWidget):
         self.status_table.setItem(2, 1, QTableWidgetItem(action_name))
 
     def set_screenshot(self, t_img):
-        if self.curr_pixmap:
-            self.prev_screen_label.setPixmap(self.curr_pixmap)
-        height, width, channel = t_img.shape
+        height, width = t_img.shape
+        channel = 1
         bytes_per_line = channel * width
         self.curr_pixmap = QPixmap.fromImage(
-            QImage(t_img.data, width, height, bytes_per_line, QImage.Format_RGB888).rgbSwapped())
+            QImage(t_img.data, width, height, bytes_per_line, QImage.Format_Grayscale8).rgbSwapped())
         self.screen_label.setPixmap(self.curr_pixmap)
         self.repaint()
+
+    def set_previous_screenshot(self, t_img_dict):
+        t_img = t_img_dict['screenshot']
+        height, width = t_img.shape
+        channel = 1
+        bytes_per_line = channel * width
+        self.curr_pixmap = QPixmap.fromImage(
+            QImage(t_img.data, width, height, bytes_per_line, QImage.Format_Grayscale8).rgbSwapped())
+        self.prev_screen_label.setPixmap(self.curr_pixmap)
