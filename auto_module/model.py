@@ -8,7 +8,7 @@ import networkx as nx
 
 from auto_module.constant import STATE_TYPE
 from auto_module.exception import DatabaseIllegalException, GameConfigIllegalException, NoPathFindException
-from auto_module.image import get_resource_img, check_contain_img, get_matched_area
+from auto_module.image import get_gray_resource_img, check_contain_img, get_matched_area, get_raw_resource_img
 from auto_module.logger import get_logger
 from typing import List, Dict, Tuple
 
@@ -113,11 +113,14 @@ class GameAction:
         return self.__str__()
 
     def get_action_area(self, src_img):
-        c_img = get_resource_img(self.data_dir, self.condition)
+        c_img = get_gray_resource_img(self.data_dir, self.condition)
         return get_matched_area(src_img, c_img)
 
+    def get_raw_condition_img(self):
+        return get_raw_resource_img(self.data_dir, self.condition)
+
     def check_if_condition_met(self, src_img):
-        c_img = get_resource_img(self.data_dir, self.condition)
+        c_img = get_gray_resource_img(self.data_dir, self.condition)
         return check_contain_img(src_img, c_img)[0]
 
 
@@ -139,6 +142,12 @@ class GameState:
         game_action.data_dir = os.path.join(self.game_config_dir, self.name)
         self.action_dict[game_action.name] = game_action
 
+    def get_raw_condition_img(self, condition):
+        return get_raw_resource_img(os.path.join(self.game_config_dir, self.name), condition)
+
+    def get_gray_condition_img(self, condition):
+        return get_gray_resource_img(os.path.join(self.game_config_dir, self.name), condition)
+
     def check_if_conditions_met(self, src_img) -> Tuple[bool, list]:
         if len(self.conditions) == 0:
             return False, []
@@ -152,7 +161,7 @@ class GameState:
                 not_flag = True
             else:
                 condition_img = condition
-            c_img = get_resource_img(os.path.join(self.game_config_dir, self.name), condition_img)
+            c_img = self.get_gray_condition_img(condition_img)
             if_contains, rect = check_contain_img(src_img, c_img)
             if if_contains:
                 rect_list.append(rect)

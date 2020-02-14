@@ -5,8 +5,8 @@ from auto_module import image
 
 
 if __name__ == '__main__':
-    announcement_close = image.get_resource_img('./resources', 'home_mark.png')
-    announcement = image.get_resource_img('./test', 'test_home.png')
+    announcement_close = image.get_gray_resource_img('./resources', 'home_mark.png')
+    announcement = image.get_gray_resource_img('./test', 'test_home.png')
 
     result = image.get_matched_area(announcement, announcement_close)
     if result is not None:

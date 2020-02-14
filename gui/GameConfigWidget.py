@@ -1,5 +1,6 @@
 import json
 import sys
+import resource.resource
 
 from PyQt5.QtCore import QUrl, pyqtSignal, qDebug, QSize
 from PyQt5.QtWebChannel import QWebChannel
@@ -61,7 +62,7 @@ class GameConfigWidget(QWidget):
         self.web_channel = QWebChannel(self.web_view.page())
         self.web_channel.registerObject('configWidget', self)
         self.web_view.page().setWebChannel(self.web_channel)
-        self.web_view.load(QUrl('file:///gui/resource/draw.html'))
+        self.web_view.load(QUrl('qrc:/resource/html/draw.html'))
         self.main_layout.addWidget(self.web_view)
 
         self.main_layout.setStretchFactor(self.web_view, 3)

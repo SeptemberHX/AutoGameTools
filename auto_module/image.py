@@ -13,6 +13,7 @@ import win32api
 import win32con
 import win32gui
 import win32ui
+from PyQt5.QtGui import QImage
 
 from mss import mss
 
@@ -26,21 +27,10 @@ logger = get_logger('image')
 resource_img_dict = {}
 
 
-def get_game_frame(x, y, width, height):
-    """
-    Get one frame of the game with screenshot
-    :param x: x position of left-top corner
-    :param y: y position of left-top corner
-    :param width: width of the active window
-    :param height: height of the active window
-    :return:
-    """
-    img = None
-    with mss() as sct:
-        img = np.array(sct.grab({"top": y, "left": x, "width": width, "height": height}))
-        img = np.flip(img[:, :, :3], 2)
-    return img
-
+def convert_bgr_to_QImage(t_img):
+    height, width, channel = t_img.shape
+    bytes_per_line = channel * width
+    return QImage(t_img.data, width, height, bytes_per_line, QImage.Format_RGB888).rgbSwapped()
 
 # def get_matched_area_aircv(src_image, target_image):
 #     r = ac.find_sift(target_image, src_image)
@@ -82,7 +72,12 @@ def check_img_equal(src_img, target_img):
     return check_contain_img(src_img, target_img)[0]
 
 
-def get_resource_img(resource_dir_path, resource_name):
+def get_raw_resource_img(resource_dir_path, resource_name):
+    img_path = os.path.join(resource_dir_path, resource_name)
+    return cv2.imdecode(np.fromfile(img_path, dtype=np.uint8), cv2.IMREAD_COLOR)
+
+
+def get_gray_resource_img(resource_dir_path, resource_name):
     img_path = os.path.join(resource_dir_path, resource_name)
     if img_path not in resource_img_dict:
         logger.info('read image ' + img_path)
@@ -161,6 +156,6 @@ class GameWindow:
 
 
 if __name__ == '__main__':
-    a1 = get_resource_img('../game_tools/Arknights/test', 'a1.png')
-    a2 = get_resource_img('../game_tools/Arknights/test', 'a2.png')
+    a1 = get_gray_resource_img('../game_tools/Arknights/test', 'a1.png')
+    a2 = get_gray_resource_img('../game_tools/Arknights/test', 'a2.png')
     print(check_contain_img(a1, a2))
