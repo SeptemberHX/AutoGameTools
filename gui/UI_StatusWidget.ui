@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1144</width>
-    <height>871</height>
+    <height>875</height>
    </rect>
   </property>
   <property name="font">
@@ -370,6 +370,9 @@ border-style: solid;
            <property name="text">
             <string>Waiting for screenshot...</string>
            </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
           </widget>
          </item>
         </layout>
@@ -405,6 +408,9 @@ border-style: solid;
               </property>
               <property name="text">
                <string>Waiting for screenshot...</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
               </property>
              </widget>
             </item>

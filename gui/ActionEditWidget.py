@@ -1,6 +1,6 @@
 import sys
 
-from PyQt5.QtCore import Qt, pyqtSignal
+from PyQt5.QtCore import Qt, pyqtSignal, QSize
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QWidget, QApplication, QMessageBox
 
@@ -32,14 +32,22 @@ class ActionEditWidget(QWidget, Ui_ActionEditWidget):
         self.img = img
         self.preview_label.setPixmap(QPixmap(img).scaled(self.preview_label.size(), Qt.KeepAspectRatio))
 
+    def reset(self):
+        self.name_lineEdit.clear()
+        self.to_comboBox.clear()
+        self.preview_label.clear()
+
     def load_action(self, game_action: GameAction, state_list):
         self.name_lineEdit.setText(game_action.name)
-        self.successor_comboBox.clear()
-        self.successor_comboBox.addItems(state_list)
-        self.successor_comboBox.setCurrentText(game_action.successor)
+        self.to_comboBox.clear()
+        self.to_comboBox.addItems(state_list)
+        self.to_comboBox.setCurrentText(game_action.to_state)
+        self.from_comboBox.clear()
+        self.from_comboBox.addItems(state_list)
+        self.from_comboBox.setCurrentText(game_action.from_state)
         self.area_condition.setText(game_action.condition[:game_action.condition.find('.')])
         self.img = convert_bgr_to_QImage(game_action.get_raw_condition_img())
-        self.preview_label.setPixmap(QPixmap(self.img).scaled(self.preview_label.size(), Qt.KeepAspectRatio))
+        self.preview_label.setPixmap(QPixmap(self.img).scaled(self.preview_label.size() - QSize(6, 6), Qt.KeepAspectRatio))
 
     def check_legal(self):
         if len(self.name_lineEdit.text()) == 0:
@@ -57,7 +65,8 @@ class ActionEditWidget(QWidget, Ui_ActionEditWidget):
     def collect_data(self):
         return {
             'name': self.name_lineEdit.text(),
-            'successor': self.successor_comboBox.currentText(),
+            'to': self.to_comboBox.currentText(),
+            'from': self.from_comboBox.currentText(),
             'condition': self.area_condition.text(),
             'img': self.img
         }

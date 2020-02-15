@@ -1,7 +1,7 @@
 # coding = utf-8
 
 from PyQt5.QtCore import QThread, QSize
-from PyQt5.QtWidgets import QWidget, QHBoxLayout, QPushButton, QVBoxLayout, QButtonGroup
+from PyQt5.QtWidgets import QWidget, QHBoxLayout, QPushButton, QVBoxLayout, QButtonGroup, QSizePolicy
 
 from auto_module.executor import Executor
 from auto_module.image import GameWindow
@@ -46,6 +46,7 @@ class AutoGameToolWindow(QWidget):
         self.button_widget = QWidget(self)
         self.button_widget_layout = QVBoxLayout(self.button_widget)
         self.button_widget.setLayout(self.button_widget_layout)
+        self.button_widget_layout.addStretch()
 
         self.game_config_button = QPushButton('Config', self)
         self.game_config_button.setFixedSize(self.button_size)
@@ -62,6 +63,7 @@ class AutoGameToolWindow(QWidget):
         self.button_widget_layout.addStretch()
         self.main_layout.addWidget(self.button_widget)
 
+        self.button_widget.setFixedWidth(120)
         # ------
         self.right_widget_list = []
 

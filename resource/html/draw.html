@@ -11,7 +11,7 @@
 
 <script>
     var width = 500;
-    var height = 500;
+    var height = 1000;
     var color = d3.scaleOrdinal(d3.schemeCategory10);
 
     new QWebChannel(qt.webChannelTransport, function (channel) {
@@ -95,7 +95,7 @@
         d3.select("body").selectAll("svg").remove();
         var svg = d3.select("body")
             .append("svg")
-            .attr("viewBox", "0 0 500 500")
+            .attr("viewBox", "0 0 500 1000")
             .attr("preserveAspectRatio", "xMidYMid meet");
         svg.append("marker")
             .attr("id", "resolved")

@@ -1,6 +1,6 @@
 # coding = utf-8
 from PyQt5 import QtCore
-from PyQt5.QtCore import QThread
+from PyQt5.QtCore import QThread, Qt
 from PyQt5.QtGui import QImage, QPixmap
 from PyQt5.QtWidgets import QAbstractItemView, QTableWidgetItem, QHeaderView, QMessageBox, QWidget
 from win32gui import IsWindowEnabled, IsWindow, GetWindowText, EnumWindows, IsWindowVisible, IsIconic
@@ -54,9 +54,6 @@ class StatusWindow(QWidget, Ui_StatusWidget):
         self.stop_button.setEnabled(False)
 
         # ------
-
-        self.screen_label.setScaledContents(True)
-        self.prev_screen_label.setScaledContents(True)
 
         self.window_chosen_refresh_button.clicked.connect(self.refresh_window_title_list)
         self.refresh_window_title_list()
@@ -203,7 +200,7 @@ class StatusWindow(QWidget, Ui_StatusWidget):
         bytes_per_line = channel * width
         self.curr_pixmap = QPixmap.fromImage(
             QImage(t_img.data, width, height, bytes_per_line, QImage.Format_Grayscale8).rgbSwapped())
-        self.screen_label.setPixmap(self.curr_pixmap)
+        self.screen_label.setPixmap(self.curr_pixmap.scaled(self.screen_label.size(), Qt.KeepAspectRatio))
         self.repaint()
 
     def set_previous_screenshot(self, t_img_dict):
@@ -213,4 +210,4 @@ class StatusWindow(QWidget, Ui_StatusWidget):
         bytes_per_line = channel * width
         self.curr_pixmap = QPixmap.fromImage(
             QImage(t_img.data, width, height, bytes_per_line, QImage.Format_Grayscale8).rgbSwapped())
-        self.prev_screen_label.setPixmap(self.curr_pixmap)
+        self.prev_screen_label.setPixmap(self.curr_pixmap.scaled(self.prev_screen_label.size(), Qt.KeepAspectRatio))

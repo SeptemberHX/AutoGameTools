@@ -58,7 +58,7 @@ class Executor(QObject):
             curr_state = from_state
             game_img = None
             for action in action_list:
-                logger.info('trying to move from {0} to {1}...'.format(curr_state, action.successor))
+                logger.info('trying to move from {0} to {1}...'.format(curr_state, action.to_state))
                 if state_id == to_state:
                     break
 
@@ -70,25 +70,25 @@ class Executor(QObject):
                     state_id, game_img = self.execute_to(state_id, curr_state)
 
                 # do the action to move on to the next state
-                logger.info('move from {0} to {1}'.format(curr_state, action.successor))
-                while state_id != action.successor:
+                logger.info('move from {0} to {1}'.format(curr_state, action.to_state))
+                while state_id != action.to_state:
                     logger.info('Executing action {0}...'.format(action.name))
                     self.execute_action(self.game_config.game_state_dict[curr_state], action)
                     time.sleep(SCT_INTERVAL)
-                    state_id, game_img = self.get_valid_state(action.successor)
-                    if state_id == action.successor:
+                    state_id, game_img = self.get_valid_state(action.to_state)
+                    if state_id == action.to_state:
                         break
                     if self.game_config.game_state_dict[state_id].type not in DIRECT_STATE_TYPE:
                         state_id, game_img = self.handle_abnormal_state(state_id)
-                    if state_id != action.successor and to_state == RESERVED_STATE['NEED_IDENTIFY']:
+                    if state_id != action.to_state and to_state == RESERVED_STATE['NEED_IDENTIFY']:
                         break
-                    if state_id != curr_state and state_id != action.successor \
+                    if state_id != curr_state and state_id != action.to_state \
                             and self.game_config.game_state_dict[state_id].type in DIRECT_STATE_TYPE:
-                        self.execute_to(state_id, action.successor)
+                        self.execute_to(state_id, action.to_state)
 
                 logger.info('Action {0} finished'.format(action.name))
-                logger.info('move from {0} to {1} finished'.format(curr_state, action.successor))
-                curr_state = action.successor
+                logger.info('move from {0} to {1} finished'.format(curr_state, action.to_state))
+                curr_state = action.to_state
 
             while to_state != RESERVED_STATE['NEED_IDENTIFY'] and state_id != to_state:
                 logger.info('Trying to solve unmatched to_state {0}...'.format(state_id))

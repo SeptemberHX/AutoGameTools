@@ -6,7 +6,7 @@ import math
 import queue
 import networkx as nx
 
-from auto_module.constant import STATE_TYPE
+from auto_module.constant import STATE_TYPE, RESERVED_STATE
 from auto_module.exception import DatabaseIllegalException, GameConfigIllegalException, NoPathFindException
 from auto_module.image import get_gray_resource_img, check_contain_img, get_matched_area, get_raw_resource_img
 from auto_module.logger import get_logger
@@ -78,7 +78,7 @@ def read_game_config_file(config_dir, config_name):
                 for action_json in state_json['actions']:
                     p = action_json['predecessor'] if 'predecessor' in action_json else None
                     game_action = GameAction(action_json['name'], action_json['method'],
-                                             action_json['condition'], action_json['successor'], p)
+                                             action_json['condition'], game_state.name, action_json['successor'], p)
                     game_state.add_action(game_action)
                 game_config.add_state(game_state)
             game_config.build_graph()
@@ -89,25 +89,26 @@ def read_game_config_file(config_dir, config_name):
 
 
 class GameAction:
-    def __init__(self, name, method, condition, successor, predecessor=None):
+    def __init__(self, name, method, condition, from_state, to_state, predecessor=None):
         """
 
         :param name: action name
         :param method: action active method: click or swipe
         :param condition: condition picture for finding the clicking position
-        :param successor: next state name
+        :param to_state: next state name
         :param predecessor: action only be executed when the previous status is predecessor if presented
                             will be checked when finding the shortest path for execution
         """
         self.name = name
         self.method = method
         self.condition = condition
-        self.successor = successor
+        self.to_state = to_state
         self.data_dir = ''
         self.predecessor = predecessor
+        self.from_state = from_state
 
     def __str__(self) -> str:
-        return '{0}|{1}|{2}|{3}'.format(self.name, self.method, self.condition, self.successor)
+        return '{0}|{1}|{2}|{3}'.format(self.name, self.method, self.condition, self.to_state)
 
     def __repr__(self) -> str:
         return self.__str__()
@@ -137,6 +138,10 @@ class GameState:
         self.action_dict = {}
         self.game_config_dir = game_config_dir
         self.type = state_type
+
+    @staticmethod
+    def default(game_config_dir):
+        return GameState('DEFAULT', '', game_config_dir, STATE_TYPE['NORMAL'])
 
     def add_action(self, game_action: GameAction):
         game_action.data_dir = os.path.join(self.game_config_dir, self.name)
@@ -179,6 +184,13 @@ class GameConfig:
         self.graph = nx.DiGraph()  # type: nx.DiGraph
         self.game_title = game_title
 
+    def get_all_user_state(self):
+        r = []
+        for s in self.game_state_dict.keys():
+            if s not in RESERVED_STATE.values():
+                r.append(s)
+        return sorted(r)
+
     def add_state(self, game_state: GameState):
         self.game_state_dict[game_state.name] = game_state
         for k, v in game_state.action_dict.items():
@@ -189,7 +201,7 @@ class GameConfig:
             self.graph.add_node(state_name)
         for state_name, state in self.game_state_dict.items():
             for action in state.action_dict.values():
-                self.graph.add_edge(state_name, action.successor, action=action.name, weight=1)
+                self.graph.add_edge(state_name, action.to_state, action=action.name, weight=1)
 
     def get_shortest_action_list(self, source_state, target_state) -> List[GameAction]:
         """

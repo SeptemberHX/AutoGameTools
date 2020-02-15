@@ -13,7 +13,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_StatusWidget(object):
     def setupUi(self, StatusWidget):
         StatusWidget.setObjectName("StatusWidget")
-        StatusWidget.resize(1144, 871)
+        StatusWidget.resize(1144, 875)
         font = QtGui.QFont()
         font.setFamily("Arial")
         font.setPointSize(14)
@@ -167,6 +167,7 @@ class Ui_StatusWidget(object):
         self.screen_label = QtWidgets.QLabel(self.groupBox_8)
         self.screen_label.setMinimumSize(QtCore.QSize(800, 450))
         self.screen_label.setMaximumSize(QtCore.QSize(800, 450))
+        self.screen_label.setAlignment(QtCore.Qt.AlignCenter)
         self.screen_label.setObjectName("screen_label")
         self.verticalLayout_3.addWidget(self.screen_label)
         self.verticalLayout_10.addWidget(self.groupBox_8)
@@ -184,6 +185,7 @@ class Ui_StatusWidget(object):
         self.prev_screen_label = QtWidgets.QLabel(self.groupBox_9)
         self.prev_screen_label.setMinimumSize(QtCore.QSize(480, 270))
         self.prev_screen_label.setMaximumSize(QtCore.QSize(480, 270))
+        self.prev_screen_label.setAlignment(QtCore.Qt.AlignCenter)
         self.prev_screen_label.setObjectName("prev_screen_label")
         self.verticalLayout_5.addWidget(self.prev_screen_label)
         self.horizontalLayout_2.addWidget(self.groupBox_9)
