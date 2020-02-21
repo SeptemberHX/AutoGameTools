@@ -1,5 +1,10 @@
 import json
+import os
+import shutil
 import sys
+
+import cv2
+
 import resource.resource
 
 from PyQt5.QtCore import QUrl, pyqtSignal
@@ -47,6 +52,8 @@ class GameConfigWidget(QWidget, Ui_GameConfigWidget):
         self.state_listWidget.currentItemChanged.connect(self.state_click_changed)
 
         self.state_add_toolButton.clicked.connect(self.add_default_state)
+
+        self.buttonBox.accepted.connect(self.save_current_config)
 
     def add_default_state(self):
         gs = GameState.default(self.current_config.game_config_dir)
@@ -101,6 +108,28 @@ class GameConfigWidget(QWidget, Ui_GameConfigWidget):
                                     QMessageBox.Yes)
         self.current_config = self.game_config[self.game_combobox.currentText()][self.resolution_combobox.currentText()]
         self.set_config(self.current_config)
+
+    def save_current_config(self):
+        if self.current_config is None:
+            return
+        game_config_dir = self.current_config.game_config_dir
+        game_config_dir = '/var/test'
+        if os.path.exists(game_config_dir):
+            shutil.rmtree(game_config_dir)
+        os.mkdir(game_config_dir)
+        for state_name, state in self.current_config.game_state_dict.items():
+            state_dir = os.path.join(game_config_dir, state_name)
+            if not os.path.exists(state_dir):
+                os.mkdir(state_dir)
+            for condition_img_name, condition_img in state.condition_imgs.items():
+                cv2.imencode('.png', condition_img)[1].tofile(os.path.join(state_dir, condition_img_name))
+
+            for action_name, action in state.action_dict.items():
+                cv2.imencode('.png', action.condition_img)[1].tofile(os.path.join(state_dir, action.condition))
+
+        # save config json file
+        with open(os.path.join(game_config_dir, 'config.json'), 'w', encoding='utf-8') as f:
+            json.dump(self.current_config.to_json(), f, indent=4, ensure_ascii=False)
 
 
 if __name__ == '__main__':

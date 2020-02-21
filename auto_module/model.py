@@ -69,8 +69,7 @@ def read_game_config_file(config_dir, config_name):
             print(config_json)
             game_config = GameConfig(
                 game_name=config_json['name'],
-                game_config_dir=config_dir,
-                game_title=config_json['title'],
+                game_config_dir=config_dir
             )
             for state_json in config_json['states']:
                 game_state = GameState(state_json['name'], state_json['condition'], game_config.game_config_dir,
@@ -81,7 +80,7 @@ def read_game_config_file(config_dir, config_name):
                                              action_json['condition'], game_state.name, action_json['successor'], p)
                     game_state.add_action(game_action)
                 game_config.add_state(game_state)
-            game_config.build_graph()
+            game_config.prepare()
             # game_config.draw_graph()
             return game_config
     except Exception as e:
@@ -106,6 +105,16 @@ class GameAction:
         self.data_dir = ''
         self.predecessor = predecessor
         self.from_state = from_state
+        self.condition_img = None  # only used during editing
+        self.modified = False
+
+    def to_json(self):
+        return {
+            'name': self.name,
+            'method': 'click',
+            'condition': self.condition,
+            'successor': self.to_state
+        }
 
     def __str__(self) -> str:
         return '{0}|{1}|{2}|{3}'.format(self.name, self.method, self.condition, self.to_state)
@@ -118,11 +127,16 @@ class GameAction:
         return get_matched_area(src_img, c_img)
 
     def get_raw_condition_img(self):
-        return get_raw_resource_img(self.data_dir, self.condition)
+        if self.condition_img is None:
+            self.condition_img = get_raw_resource_img(self.data_dir, self.condition)
+        return self.condition_img
 
     def check_if_condition_met(self, src_img):
         c_img = get_gray_resource_img(self.data_dir, self.condition)
         return check_contain_img(src_img, c_img)[0]
+
+    def prepare(self):
+        self.condition_img = self.get_raw_condition_img()
 
 
 class GameState:
@@ -135,9 +149,22 @@ class GameState:
         """
         self.name = name
         self.conditions = conditions
-        self.action_dict = {}
+        self.condition_imgs = {}
+        self.action_dict = {}  # type: Dict[str, GameAction]
         self.game_config_dir = game_config_dir
         self.type = state_type
+        self.modified = False
+
+    def to_json(self):
+        action_json_list = []
+        for action in self.action_dict.values():
+            action_json_list.append(action.to_json())
+        return {
+            'name': self.name,
+            'condition': self.conditions,
+            'type': self.type,
+            'actions': action_json_list
+        }
 
     @staticmethod
     def default(game_config_dir):
@@ -148,10 +175,23 @@ class GameState:
         self.action_dict[game_action.name] = game_action
 
     def get_raw_condition_img(self, condition):
-        return get_raw_resource_img(os.path.join(self.game_config_dir, self.name), condition)
+        if condition not in self.condition_imgs:
+            self.condition_imgs[condition] = get_raw_resource_img(os.path.join(self.game_config_dir, self.name), condition)
+        return self.condition_imgs[condition]
 
     def get_gray_condition_img(self, condition):
         return get_gray_resource_img(os.path.join(self.game_config_dir, self.name), condition)
+
+    def prepare(self):
+        if len(self.conditions) == 0:
+            return
+        for condition in self.conditions.split('|'):
+            if condition.startswith('!'):
+                self.get_raw_condition_img(condition[1:])
+            else:
+                self.get_raw_condition_img(condition)
+        for action in self.action_dict.values():
+            action.prepare()
 
     def check_if_conditions_met(self, src_img) -> Tuple[bool, list]:
         if len(self.conditions) == 0:
@@ -176,13 +216,21 @@ class GameState:
 
 
 class GameConfig:
-    def __init__(self, game_name, game_config_dir, game_title):
+    def __init__(self, game_name, game_config_dir):
         self.game_name = game_name
         self.game_config_dir = game_config_dir
         self.game_state_dict = {}  # type: Dict[str, GameState]
         self.game_action_dict = {}
         self.graph = nx.DiGraph()  # type: nx.DiGraph
-        self.game_title = game_title
+
+    def to_json(self):
+        state_json_list = []
+        for state in self.game_state_dict.values():
+            state_json_list.append(state.to_json())
+        return {
+            'name': self.game_name,
+            'states': state_json_list
+        }
 
     def get_all_user_state(self):
         r = []
@@ -195,6 +243,11 @@ class GameConfig:
         self.game_state_dict[game_state.name] = game_state
         for k, v in game_state.action_dict.items():
             self.game_action_dict[k] = v
+
+    def prepare(self):
+        for state in self.game_state_dict.values():
+            state.prepare()
+        self.build_graph()
 
     def build_graph(self):
         for state_name, _ in self.game_state_dict.items():
