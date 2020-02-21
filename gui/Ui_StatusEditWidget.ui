@@ -6,9 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>652</width>
+    <width>496</width>
     <height>675</height>
    </rect>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>500</width>
+    <height>16777215</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>Form</string>
@@ -25,6 +31,12 @@
    </property>
    <item>
     <widget class="QGroupBox" name="groupBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="title">
       <string>State Editor</string>
      </property>
@@ -58,7 +70,33 @@
              </widget>
             </item>
             <item>
-             <widget class="QLineEdit" name="name_lineEdit"/>
+             <spacer name="horizontalSpacer">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="name_lineEdit">
+              <property name="minimumSize">
+               <size>
+                <width>250</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>250</width>
+                <height>16777215</height>
+               </size>
+              </property>
+             </widget>
             </item>
            </layout>
           </widget>
@@ -74,7 +112,20 @@
              </widget>
             </item>
             <item>
-             <widget class="QComboBox" name="type_comboBox"/>
+             <widget class="QComboBox" name="type_comboBox">
+              <property name="minimumSize">
+               <size>
+                <width>250</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>250</width>
+                <height>16777215</height>
+               </size>
+              </property>
+             </widget>
             </item>
            </layout>
           </widget>
@@ -100,17 +151,26 @@
             <bool>false</bool>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_3">
+            <property name="leftMargin">
+             <number>9</number>
+            </property>
+            <property name="topMargin">
+             <number>3</number>
+            </property>
+            <property name="bottomMargin">
+             <number>3</number>
+            </property>
             <item>
              <widget class="QWidget" name="widget_4" native="true">
               <property name="minimumSize">
                <size>
-                <width>350</width>
+                <width>180</width>
                 <height>0</height>
                </size>
               </property>
               <property name="maximumSize">
                <size>
-                <width>350</width>
+                <width>180</width>
                 <height>16777215</height>
                </size>
               </property>
@@ -153,6 +213,12 @@
                <item>
                 <widget class="QWidget" name="widget_5" native="true">
                  <layout class="QHBoxLayout" name="horizontalLayout_4">
+                  <property name="topMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="bottomMargin">
+                   <number>0</number>
+                  </property>
                   <item>
                    <widget class="QLabel" name="label_4">
                     <property name="text">
@@ -201,6 +267,18 @@
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
+              <property name="minimumSize">
+               <size>
+                <width>250</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>250</width>
+                <height>16777215</height>
+               </size>
+              </property>
               <property name="frameShape">
                <enum>QFrame::Box</enum>
               </property>
@@ -233,17 +311,23 @@
             <bool>false</bool>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_6">
+            <property name="topMargin">
+             <number>3</number>
+            </property>
+            <property name="bottomMargin">
+             <number>3</number>
+            </property>
             <item>
              <widget class="QWidget" name="widget_7" native="true">
               <property name="minimumSize">
                <size>
-                <width>350</width>
+                <width>180</width>
                 <height>0</height>
                </size>
               </property>
               <property name="maximumSize">
                <size>
-                <width>350</width>
+                <width>180</width>
                 <height>16777215</height>
                </size>
               </property>
@@ -286,6 +370,12 @@
                <item>
                 <widget class="QWidget" name="widget_8" native="true">
                  <layout class="QHBoxLayout" name="horizontalLayout_7">
+                  <property name="topMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="bottomMargin">
+                   <number>0</number>
+                  </property>
                   <item>
                    <widget class="QLabel" name="label_5">
                     <property name="text">
@@ -328,6 +418,18 @@
             </item>
             <item>
              <widget class="QLabel" name="preview_label_1">
+              <property name="minimumSize">
+               <size>
+                <width>250</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>250</width>
+                <height>16777215</height>
+               </size>
+              </property>
               <property name="frameShape">
                <enum>QFrame::Box</enum>
               </property>
@@ -360,17 +462,23 @@
             <bool>false</bool>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_9">
+            <property name="topMargin">
+             <number>3</number>
+            </property>
+            <property name="bottomMargin">
+             <number>3</number>
+            </property>
             <item>
              <widget class="QWidget" name="widget_10" native="true">
               <property name="minimumSize">
                <size>
-                <width>350</width>
+                <width>180</width>
                 <height>0</height>
                </size>
               </property>
               <property name="maximumSize">
                <size>
-                <width>350</width>
+                <width>180</width>
                 <height>16777215</height>
                </size>
               </property>
@@ -443,6 +551,12 @@
                <item>
                 <widget class="QWidget" name="widget_12" native="true">
                  <layout class="QHBoxLayout" name="horizontalLayout_11">
+                  <property name="topMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="bottomMargin">
+                   <number>0</number>
+                  </property>
                   <item>
                    <widget class="QPushButton" name="screenshot_button_2">
                     <property name="text">
@@ -458,6 +572,18 @@
             </item>
             <item>
              <widget class="QLabel" name="preview_label_2">
+              <property name="minimumSize">
+               <size>
+                <width>250</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>250</width>
+                <height>16777215</height>
+               </size>
+              </property>
               <property name="frameShape">
                <enum>QFrame::Box</enum>
               </property>

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>475</width>
+    <width>476</width>
     <height>487</height>
    </rect>
   </property>
@@ -28,6 +28,12 @@
    </property>
    <item>
     <widget class="QGroupBox" name="groupBox">
+     <property name="maximumSize">
+      <size>
+       <width>500</width>
+       <height>16777215</height>
+      </size>
+     </property>
      <property name="title">
       <string>Action Editor</string>
      </property>
@@ -43,7 +49,33 @@
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="name_lineEdit"/>
+          <spacer name="horizontalSpacer">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="name_lineEdit">
+           <property name="minimumSize">
+            <size>
+             <width>250</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>250</width>
+             <height>16777215</height>
+            </size>
+           </property>
+          </widget>
          </item>
         </layout>
        </widget>
@@ -59,7 +91,20 @@
           </widget>
          </item>
          <item>
-          <widget class="QComboBox" name="from_comboBox"/>
+          <widget class="QComboBox" name="from_comboBox">
+           <property name="minimumSize">
+            <size>
+             <width>250</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>250</width>
+             <height>16777215</height>
+            </size>
+           </property>
+          </widget>
          </item>
         </layout>
        </widget>
@@ -75,7 +120,20 @@
           </widget>
          </item>
          <item>
-          <widget class="QComboBox" name="to_comboBox"/>
+          <widget class="QComboBox" name="to_comboBox">
+           <property name="minimumSize">
+            <size>
+             <width>250</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>250</width>
+             <height>16777215</height>
+            </size>
+           </property>
+          </widget>
          </item>
         </layout>
        </widget>
@@ -96,19 +154,19 @@
           <widget class="QWidget" name="widget_4" native="true">
            <property name="minimumSize">
             <size>
-             <width>250</width>
+             <width>180</width>
              <height>0</height>
             </size>
            </property>
            <property name="maximumSize">
             <size>
-             <width>250</width>
+             <width>180</width>
              <height>16777215</height>
             </size>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_2">
             <property name="spacing">
-             <number>12</number>
+             <number>6</number>
             </property>
             <item>
              <widget class="QWidget" name="widget" native="true">
@@ -123,7 +181,7 @@
                 <number>0</number>
                </property>
                <property name="bottomMargin">
-                <number>9</number>
+                <number>3</number>
                </property>
                <item>
                 <widget class="QLabel" name="label_3">
@@ -154,6 +212,18 @@
          </item>
          <item>
           <widget class="QLabel" name="preview_label">
+           <property name="minimumSize">
+            <size>
+             <width>250</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>250</width>
+             <height>16777215</height>
+            </size>
+           </property>
            <property name="frameShape">
             <enum>QFrame::Box</enum>
            </property>

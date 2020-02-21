@@ -57,38 +57,49 @@ class Executor(QObject):
             action_list = self.game_config.get_shortest_action_list_with_predecessor(from_state, to_state, must_have_states)
             curr_state = from_state
             game_img = None
-            for action in action_list:
+            action_index = 0
+            while action_index < len(action_list):
+                action = action_list[action_index]
                 logger.info('trying to move from {0} to {1}...'.format(curr_state, action.to_state))
                 if state_id == to_state:
                     break
 
-                # while state_id != curr_state and game_config.game_state_dict[state_id].type not in DIRECT_STATE_TYPE:
-                #     state_id, game_img = handle_abnormal_state(game_config, game_window, state_id)
-
-                while state_id != curr_state:
-                    logger.info('current status not match, trying to correct it')
-                    state_id, game_img = self.execute_to(state_id, curr_state)
-
-                # do the action to move on to the next state
-                logger.info('move from {0} to {1}'.format(curr_state, action.to_state))
-                while state_id != action.to_state:
-                    logger.info('Executing action {0}...'.format(action.name))
-                    self.execute_action(self.game_config.game_state_dict[curr_state], action)
-                    time.sleep(SCT_INTERVAL)
-                    state_id, game_img = self.get_valid_state(action.to_state)
-                    if state_id == action.to_state:
+                middle_state_flag = False
+                if state_id != curr_state:
+                    # check whether it is a middle state
+                    for index in range(len(action_list)):
+                        if action_list[index].to_state == state_id:
+                            action_index = index + 1  # state_id will never equal to to_state, thus index + 1 < len(action_list)
+                            middle_state_flag = True
+                            break
+                    if middle_state_flag:  # if true, jump to corresponding action
+                        logger.info('Middle state met, jump to action {0}'.format(action_list[action_index].name))
+                        continue
+                    else:
+                        state_id, game_img = self.execute_to(state_id, to_state)
                         break
-                    if self.game_config.game_state_dict[state_id].type not in DIRECT_STATE_TYPE:
-                        state_id, game_img = self.handle_abnormal_state(state_id)
-                    if state_id != action.to_state and to_state == RESERVED_STATE['NEED_IDENTIFY']:
-                        break
-                    if state_id != curr_state and state_id != action.to_state \
-                            and self.game_config.game_state_dict[state_id].type in DIRECT_STATE_TYPE:
-                        self.execute_to(state_id, action.to_state)
+                else:
+                    # do the action to move on to the next state
+                    logger.info('move from {0} to {1}'.format(curr_state, action.to_state))
+                    while state_id != action.to_state:
+                        logger.info('Executing action {0}...'.format(action.name))
+                        self.execute_action(self.game_config.game_state_dict[curr_state], action)
+                        time.sleep(SCT_INTERVAL)
+                        state_id, game_img = self.get_valid_state(action.to_state)
+                        if state_id == action.to_state:
+                            break
+                        if self.game_config.game_state_dict[state_id].type not in DIRECT_STATE_TYPE:
+                            state_id, game_img = self.handle_abnormal_state(state_id)
+                        if state_id != action.to_state and to_state == RESERVED_STATE['NEED_IDENTIFY']:
+                            break
+                        if state_id != curr_state and state_id != action.to_state \
+                                and self.game_config.game_state_dict[state_id].type in DIRECT_STATE_TYPE:
+                            self.execute_to(state_id, action.to_state)
 
-                logger.info('Action {0} finished'.format(action.name))
-                logger.info('move from {0} to {1} finished'.format(curr_state, action.to_state))
-                curr_state = action.to_state
+                    logger.info('Action {0} finished'.format(action.name))
+                    logger.info('move from {0} to {1} finished'.format(curr_state, action.to_state))
+                    curr_state = action.to_state
+                action_index += 1
 
             while to_state != RESERVED_STATE['NEED_IDENTIFY'] and state_id != to_state:
                 logger.info('Trying to solve unmatched to_state {0}...'.format(state_id))

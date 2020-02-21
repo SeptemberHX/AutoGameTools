@@ -28,12 +28,10 @@ class GameConfigWidget(QWidget, Ui_GameConfigWidget):
 
         self.state_edit_widget = StatusEditWidget(self)
         self.state_edit_widget.hide()
-        self.state_edit_widget.setFixedWidth(700)
         self.main_layout.addWidget(self.state_edit_widget)
 
         self.action_edit_widget = ActionEditWidget(self)
         self.action_edit_widget.hide()
-        self.action_edit_widget.setFixedWidth(700)
         self.main_layout.addWidget(self.action_edit_widget)
 
         self.web_view = QWebEngineView(self)
