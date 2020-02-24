@@ -4,7 +4,6 @@ from PyQt5.QtCore import Qt, pyqtSignal, QSize
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QWidget, QApplication, QMessageBox
 
-from auto_module.image import convert_bgr_to_QImage
 from auto_module.model import GameAction, load_game_databases
 from gui.Ui_ActionEditWidget import Ui_ActionEditWidget
 from pyqt_screenshot.screenshot import Screenshot, constant
@@ -12,7 +11,7 @@ from pyqt_screenshot.screenshot import Screenshot, constant
 
 class ActionEditWidget(QWidget, Ui_ActionEditWidget):
 
-    status_saved = pyqtSignal(dict)
+    action_saved = pyqtSignal(dict)
     status_canceled = pyqtSignal()
 
     def __init__(self, parent=None):
@@ -23,6 +22,9 @@ class ActionEditWidget(QWidget, Ui_ActionEditWidget):
         self.screenshot_button.clicked.connect(self.screenshot_clicked)
         self.button_group.accepted.connect(self.save_button_clicked)
         self.button_group.rejected.connect(self.status_canceled)
+
+        self.from_comboBox.currentIndexChanged.connect(self.auto_generate_name)
+        self.to_comboBox.currentIndexChanged.connect(self.auto_generate_name)
 
     def screenshot_clicked(self):
         img = Screenshot.take_screenshot(constant.CLIPBOARD)
@@ -46,8 +48,11 @@ class ActionEditWidget(QWidget, Ui_ActionEditWidget):
         self.from_comboBox.addItems(state_list)
         self.from_comboBox.setCurrentText(game_action.from_state)
         self.area_condition.setText(game_action.condition[:game_action.condition.find('.')])
-        self.img = convert_bgr_to_QImage(game_action.get_raw_condition_img())
+        self.img = game_action.get_raw_condition_img()
         self.preview_label.setPixmap(QPixmap(self.img).scaled(self.preview_label.size() - QSize(6, 6), Qt.KeepAspectRatio))
+
+    def auto_generate_name(self):
+        self.name_lineEdit.setText('{0}->{1}'.format(self.from_comboBox.currentText(), self.to_comboBox.currentText()))
 
     def check_legal(self):
         if len(self.name_lineEdit.text()) == 0:
@@ -57,10 +62,11 @@ class ActionEditWidget(QWidget, Ui_ActionEditWidget):
         if self.img is None:
             QMessageBox.information(self, 'Illegal Information', 'Condition image is empty!', QMessageBox.Ok)
             return False
+        return True
 
     def save_button_clicked(self):
         if self.check_legal():
-            self.status_saved.emit(self.collect_data())
+            self.action_saved.emit(self.collect_data())
 
     def collect_data(self):
         return {

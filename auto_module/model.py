@@ -8,7 +8,7 @@ import networkx as nx
 
 from auto_module.constant import STATE_TYPE, RESERVED_STATE
 from auto_module.exception import DatabaseIllegalException, GameConfigIllegalException, NoPathFindException
-from auto_module.image import get_gray_resource_img, check_contain_img, get_matched_area, get_raw_resource_img
+from auto_module.image import get_gray_resource_img, check_contain_img, get_matched_area, get_raw_resource_img_QImage
 from auto_module.logger import get_logger
 from typing import List, Dict, Tuple
 
@@ -106,7 +106,17 @@ class GameAction:
         self.predecessor = predecessor
         self.from_state = from_state
         self.condition_img = None  # only used during editing
-        self.modified = False
+
+    @staticmethod
+    def default(from_state):
+        return GameAction(
+            name='DEFAULT_ACTION',
+            method='click',
+            condition='',
+            to_state=None,
+            predecessor=None,
+            from_state=from_state,
+        )
 
     def to_json(self):
         return {
@@ -128,7 +138,7 @@ class GameAction:
 
     def get_raw_condition_img(self):
         if self.condition_img is None:
-            self.condition_img = get_raw_resource_img(self.data_dir, self.condition)
+            self.condition_img = get_raw_resource_img_QImage(self.data_dir, self.condition)
         return self.condition_img
 
     def check_if_condition_met(self, src_img):
@@ -176,7 +186,7 @@ class GameState:
 
     def get_raw_condition_img(self, condition):
         if condition not in self.condition_imgs:
-            self.condition_imgs[condition] = get_raw_resource_img(os.path.join(self.game_config_dir, self.name), condition)
+            self.condition_imgs[condition] = get_raw_resource_img_QImage(os.path.join(self.game_config_dir, self.name), condition)
         return self.condition_imgs[condition]
 
     def get_gray_condition_img(self, condition):

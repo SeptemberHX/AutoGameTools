@@ -22,6 +22,25 @@
       ]
     },
     {
+      "name": "LS-4选中",
+      "condition": "LS-4.png",
+      "type": "normal",
+      "actions": [
+        {
+          "name": "行动配置",
+          "method": "click",
+          "condition": "开始行动.png",
+          "successor": "行动配置"
+        },
+        {
+          "name": "LS-4选中->战术演习",
+          "method": "click",
+          "condition": "返回.png",
+          "successor": "战术演习"
+        }
+      ]
+    },
+    {
       "name": "行动配置",
       "condition": "快捷编队.png",
       "type": "normal",
@@ -89,6 +108,12 @@
           "method": "click",
           "condition": "LS-3.png",
           "successor": "LS-3选中"
+        },
+        {
+          "name": "战术演习->LS-4选中",
+          "method": "click",
+          "condition": "LS-4.png",
+          "successor": "LS-4选中"
         }
       ]
     },

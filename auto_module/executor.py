@@ -67,7 +67,7 @@ class Executor(QObject):
                 middle_state_flag = False
                 if state_id != curr_state:
                     # check whether it is a middle state
-                    for index in range(len(action_list)):
+                    for index in range(action_index, len(action_list)):
                         if action_list[index].to_state == state_id:
                             action_index = index + 1  # state_id will never equal to to_state, thus index + 1 < len(action_list)
                             middle_state_flag = True

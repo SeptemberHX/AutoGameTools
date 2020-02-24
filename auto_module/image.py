@@ -29,8 +29,12 @@ resource_img_dict = {}
 
 def convert_bgr_to_QImage(t_img):
     height, width, channel = t_img.shape
+    print('shape = {0}'.format(t_img.shape))
     bytes_per_line = channel * width
-    return QImage(t_img.data, width, height, bytes_per_line, QImage.Format_RGB888).rgbSwapped()
+    img = QImage(t_img.data, width, height, bytes_per_line, QImage.Format_RGB888).rgbSwapped()
+    print('QImage: w: {0}, h: {1}, bytes: {2}'.format(img.width(), img.height(), img.byteCount()))
+    return img
+
 
 # def get_matched_area_aircv(src_image, target_image):
 #     r = ac.find_sift(target_image, src_image)
@@ -72,9 +76,9 @@ def check_img_equal(src_img, target_img):
     return check_contain_img(src_img, target_img)[0]
 
 
-def get_raw_resource_img(resource_dir_path, resource_name):
+def get_raw_resource_img_QImage(resource_dir_path, resource_name):
     img_path = os.path.join(resource_dir_path, resource_name)
-    return cv2.imdecode(np.fromfile(img_path, dtype=np.uint8), cv2.IMREAD_COLOR)
+    return QImage(img_path)
 
 
 def get_gray_resource_img(resource_dir_path, resource_name):

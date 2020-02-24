@@ -5,7 +5,6 @@ from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QWidget, QApplication, QMessageBox
 
 import auto_module
-from auto_module.image import convert_bgr_to_QImage
 from auto_module.model import GameState, load_game_databases
 from gui.Ui_StatusEditWidget import Ui_StatusEditWidget
 from pyqt_screenshot.screenshot import Screenshot, constant, pyqtSignal
@@ -79,7 +78,7 @@ class StatusEditWidget(QWidget, Ui_StatusEditWidget):
             if condition[0] == '!':
                 condition_img = condition[1:]
 
-            img = convert_bgr_to_QImage(game_status.get_raw_condition_img(condition_img))
+            img = game_status.get_raw_condition_img(condition_img)
             if i == 0:
                 self.img = img
                 self.contain_comboBox.setCurrentIndex(condition[0] == '!')
@@ -118,6 +117,7 @@ class StatusEditWidget(QWidget, Ui_StatusEditWidget):
             or (self.optional_groupbox_2.isChecked() and self.img_2 is None):
             QMessageBox.information(self, 'Illegal Information', 'Condition image is empty!', QMessageBox.Ok)
             return False
+        return True
 
     def save_button_clicked(self):
         if self.check_legal():
