@@ -73,11 +73,14 @@ class Executor(QObject):
                             middle_state_flag = True
                             break
                     if middle_state_flag:  # if true, jump to corresponding action
+                        curr_state = state_id
                         logger.info('Middle state met, jump to action {0}'.format(action_list[action_index].name))
                         continue
                     else:
-                        state_id, game_img = self.execute_to(state_id, to_state)
-                        break
+                        state_id, game_img = self.execute_to(state_id, from_state)
+                        curr_state = state_id
+                        action_index = 0
+                        continue
                 else:
                     # do the action to move on to the next state
                     logger.info('move from {0} to {1}'.format(curr_state, action.to_state))

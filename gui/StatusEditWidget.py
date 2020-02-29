@@ -1,7 +1,7 @@
 import sys
 
 from PyQt5.QtCore import Qt, QSize
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QPixmap, QImage
 from PyQt5.QtWidgets import QWidget, QApplication, QMessageBox
 
 import auto_module
@@ -33,12 +33,14 @@ class StatusEditWidget(QWidget, Ui_StatusEditWidget):
         self.type_comboBox.addItems(sorted(auto_module.constant.STATE_TYPE.values()))
 
     def screenshot_clicked(self):
+        self.hide()
         img = Screenshot.take_screenshot(constant.CLIPBOARD)
+        self.show()
         if img is None:
             return
 
         if self.sender() == self.screenshot_button:
-            self.img = img
+            self.img = img  # type: QImage
             self.preview_label.setPixmap(QPixmap(img).scaled(self.preview_label.size(), Qt.KeepAspectRatio))
         elif self.sender() == self.screenshot_button_1:
             self.img_1 = img

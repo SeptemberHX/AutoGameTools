@@ -62,6 +62,7 @@ class GameConfigWidget(QWidget, Ui_GameConfigWidget):
 
     def add_default_action(self):
         action = GameAction.default(self.state_listWidget.currentItem().text())
+        self.current_config.game_state_dict[self.state_listWidget.currentItem().text()].action_dict[action.name] = action
         self.current_config.game_action_dict[action.name] = action
         self.action_listWidget.insertItem(0, action.name)
 
