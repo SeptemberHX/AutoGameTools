@@ -33,7 +33,7 @@
 
 下图表示 LS-3 状态需要图中**出现** Condition LS 以及**不出现** Condition 开始行动
 
-![](https://github.com/SeptemberHX/AutoGameTools/blob/master/screenshot/config.png?raw=true)
+![](https://github.com/SeptemberHX/AutoGameTools/blob/master/screenshot/战斗演习.png?raw=true)
 ![](https://github.com/SeptemberHX/AutoGameTools/blob/master/screenshot/config.png?raw=true)
 
 ### 游戏动作（Action）
