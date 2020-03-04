@@ -45,7 +45,7 @@
 下图表示从 LS-3选中 状态 到 行动配置 状态 需要点击 开始行动区域
 
 <p float="left">
-  <img src="https://github.com/SeptemberHX/AutoGameTools/blob/master/screenshot/LS-3-selected.png?raw=true"  width="80%"/><img src="https://github.com/SeptemberHX/AutoGameTools/blob/master/screenshot/action_1.png?raw=true"  width="20%"/>
+  <img src="https://github.com/SeptemberHX/AutoGameTools/blob/master/screenshot/LS-3-selected.png?raw=true"  width="75%"/><img src="https://github.com/SeptemberHX/AutoGameTools/blob/master/screenshot/action_1.png?raw=true"  width="25%"/>
 </p>
 
 ### 运行
