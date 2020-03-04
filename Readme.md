@@ -14,8 +14,8 @@
 
 ### 截图
 
-![](https://github.com/SeptemberHX/AutoGameTools/blob/master/screenshot/Arknights.png?raw=true)
-![](https://github.com/SeptemberHX/AutoGameTools/blob/master/screenshot/config.png?raw=true)
+![](https://github.com/SeptemberHX/AutoGameTools/blob/master/screenshot/Arknights.png?raw=true 50%)
+![](https://github.com/SeptemberHX/AutoGameTools/blob/master/screenshot/config.png?raw=true 50%)
 
 ## 使用指南
 
