@@ -14,9 +14,9 @@
 
 ### 截图
 
-<center class="half">
+<p float="left">
   <img src="https://github.com/SeptemberHX/AutoGameTools/blob/master/screenshot/Arknights.png?raw=true"  width="47%"/><img src="https://github.com/SeptemberHX/AutoGameTools/blob/master/screenshot/config.png?raw=true"  width="47%"/>
-</center>
+</p>
 
 ## 使用指南
 
