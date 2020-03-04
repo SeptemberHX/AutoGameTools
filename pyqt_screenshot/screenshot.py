@@ -78,7 +78,6 @@ class Screenshot(QGraphicsView):
         self.textInput.cancelPressed.connect(self.cancelInput)
         self.textInput.okPressed.connect(self.okInput)
 
-        print('======>>> {0}, {1}'.format(self.screenPixel.width(), self.screenPixel.height()))
         self.graphicsScene = QGraphicsScene(0, 0, self.screenPixel.width(), self.screenPixel.height())
 
         self.show()
@@ -448,10 +447,7 @@ class Screenshot(QGraphicsView):
         sizeInfo.setPen(QPen(QColor(255, 255, 255), 2))
 
     def get_scale(self):
-        # tricks to solve the hidpi impact on QCursor.pos()
-        screen = QGuiApplication.screenAt(QCursor.pos())
-        scale = self.screenPixel.width() // screen.geometry().width()
-        return scale
+        return self.devicePixelRatio()
 
     def saveScreenshot(self, clipboard=False, fileName='screenshot.png', picType='png'):
         fullWindow = QRect(0, 0, self.width() - 1, self.height() - 1)
@@ -469,6 +465,7 @@ class Screenshot(QGraphicsView):
         source.setTopLeft(QPoint(source.topLeft().x() * self.scale, source.topLeft().y() * self.scale))
         source.setBottomRight(QPoint(source.bottomRight().x() * self.scale, source.bottomRight().y() * self.scale))
         image = self.screenPixel.copy(source)
+        image.setDevicePixelRatio(1)
 
         if clipboard:
             QGuiApplication.clipboard().setImage(QImage(image), QClipboard.Clipboard)

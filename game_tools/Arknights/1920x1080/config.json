@@ -1,175 +1,184 @@
 {
-  "name": "明日方舟",
-  "title": "明日方舟 - MuMu模拟器",
-  "states": [
-    {
-      "name": "LS-3选中",
-      "condition": "LS-3.png",
-      "type": "normal",
-      "actions": [
+    "name": "明日方舟",
+    "states": [
         {
-          "name": "行动配置",
-          "method": "click",
-          "condition": "开始行动.png",
-          "successor": "行动配置"
+            "name": "LS-3选中",
+            "condition": "LS-3.png",
+            "type": "normal",
+            "actions": [
+                {
+                    "name": "行动配置",
+                    "method": "click",
+                    "condition": "开始行动.png",
+                    "successor": "行动配置"
+                },
+                {
+                    "name": "LS-3选中->战术演习",
+                    "method": "click",
+                    "condition": "返回.png",
+                    "successor": "战术演习"
+                }
+            ]
         },
         {
-          "name": "LS-3选中->战术演习",
-          "method": "click",
-          "condition": "返回.png",
-          "successor": "战术演习"
-        }
-      ]
-    },
-    {
-      "name": "LS-4选中",
-      "condition": "LS-4.png",
-      "type": "normal",
-      "actions": [
-        {
-          "name": "行动配置",
-          "method": "click",
-          "condition": "开始行动.png",
-          "successor": "行动配置"
+            "name": "LS-4选中",
+            "condition": "LS-4.png",
+            "type": "normal",
+            "actions": [
+                {
+                    "name": "行动配置",
+                    "method": "click",
+                    "condition": "开始行动.png",
+                    "successor": "行动配置"
+                },
+                {
+                    "name": "LS-4选中->战术演习",
+                    "method": "click",
+                    "condition": "返回.png",
+                    "successor": "战术演习"
+                }
+            ]
         },
         {
-          "name": "LS-4选中->战术演习",
-          "method": "click",
-          "condition": "返回.png",
-          "successor": "战术演习"
-        }
-      ]
-    },
-    {
-      "name": "行动配置",
-      "condition": "快捷编队.png",
-      "type": "normal",
-      "actions": [
-        {
-          "name": "开始行动",
-          "method": "click",
-          "condition": "开始行动.png",
-          "successor": "行动结束"
+            "name": "行动配置",
+            "condition": "快捷编队.png",
+            "type": "normal",
+            "actions": [
+                {
+                    "name": "开始行动",
+                    "method": "click",
+                    "condition": "开始行动.png",
+                    "successor": "行动结束"
+                },
+                {
+                    "name": "行动配置返回",
+                    "method": "click",
+                    "condition": "返回.png",
+                    "successor": "_NEED_IDENTIFY"
+                }
+            ]
         },
         {
-          "name": "行动配置返回",
-          "method": "click",
-          "condition": "返回.png",
-          "successor": "_NEED_IDENTIFY"
-        }
-      ]
-    },
-    {
-      "name": "LS-3行动结束",
-      "condition": "行动结束.png|LS-3.png",
-      "type": "normal",
-      "actions": [
-        {
-          "name": "LS-3行动结束",
-          "method": "click",
-          "condition": "行动结束.png",
-          "successor": "LS-3选中"
-        }
-      ]
-    },
-    {
-      "name": "等级提升",
-      "condition": "等级提升.png",
-      "type": "jump",
-      "actions": [
-        {
-          "name": "等级提升-NEED_IDENTIFY",
-          "method": "click",
-          "condition": "等级提升.png",
-          "successor": "_NEED_IDENTIFY"
-        }
-      ]
-    },
-    {
-      "name": "使用药剂恢复",
-      "condition": "使用药剂恢复.png",
-      "type": "jump",
-      "actions": [
-        {
-          "name": "使用药剂恢复-NEED_IDENTIFY",
-          "method": "click",
-          "condition": "确定.png",
-          "successor": "_NEED_IDENTIFY"
-        }
-      ]
-    },
-    {
-      "name": "战术演习",
-      "condition": "LS.png|!开始行动.png",
-      "type": "horizontal_swipe",
-      "actions": [
-        {
-          "name": "战术演习->LS-3选中",
-          "method": "click",
-          "condition": "LS-3.png",
-          "successor": "LS-3选中"
+            "name": "LS-3行动结束",
+            "condition": "行动结束.png|LS-3.png",
+            "type": "normal",
+            "actions": [
+                {
+                    "name": "LS-3行动结束",
+                    "method": "click",
+                    "condition": "行动结束.png",
+                    "successor": "LS-3选中"
+                }
+            ]
         },
         {
-          "name": "战术演习->LS-4选中",
-          "method": "click",
-          "condition": "LS-4.png",
-          "successor": "LS-4选中"
-        }
-      ]
-    },
-    {
-      "name": "_NEED_IDENTIFY",
-      "condition": "",
-      "type": "NEED_IDENTIFY",
-      "actions": [
-
-      ]
-    },
-
-    {
-      "name": "货物运送",
-      "condition": "CE-.png|!开始行动.png",
-      "type": "horizontal_swipe",
-      "actions": [
-        {
-          "name": "货物运送->CE-3选中",
-          "method": "click",
-          "condition": "CE-3.png",
-          "successor": "CE-3选中"
-        }
-      ]
-    },
-    {
-      "name": "CE-3选中",
-      "condition": "CE-3.png",
-      "type": "normal",
-      "actions": [
-        {
-          "name": "行动配置",
-          "method": "click",
-          "condition": "开始行动.png",
-          "successor": "行动配置"
+            "name": "等级提升",
+            "condition": "等级提升.png",
+            "type": "jump",
+            "actions": [
+                {
+                    "name": "等级提升-NEED_IDENTIFY",
+                    "method": "click",
+                    "condition": "等级提升.png",
+                    "successor": "_NEED_IDENTIFY"
+                }
+            ]
         },
         {
-          "name": "CE-3选中返回",
-          "method": "click",
-          "condition": "返回.png",
-          "successor": "货物运送"
-        }
-      ]
-    },
-    {
-      "name": "行动结束",
-      "condition": "行动结束.png",
-      "type": "jump",
-      "actions": [
+            "name": "使用药剂恢复",
+            "condition": "使用药剂恢复.png",
+            "type": "jump",
+            "actions": [
+                {
+                    "name": "使用药剂恢复-NEED_IDENTIFY",
+                    "method": "click",
+                    "condition": "确定.png",
+                    "successor": "_NEED_IDENTIFY"
+                }
+            ]
+        },
         {
-          "name": "行动结束->_NEED_IDENTIFY",
-          "method": "click",
-          "condition": "行动结束.png",
-          "successor": "_NEED_IDENTIFY"
+            "name": "战术演习",
+            "condition": "LS.png|!开始行动.png",
+            "type": "horizontal_swipe",
+            "actions": [
+                {
+                    "name": "战术演习->LS-3选中",
+                    "method": "click",
+                    "condition": "LS-3.png",
+                    "successor": "LS-3选中"
+                },
+                {
+                    "name": "战术演习->LS-4选中",
+                    "method": "click",
+                    "condition": "LS-4.png",
+                    "successor": "LS-4选中"
+                }
+            ]
+        },
+        {
+            "name": "_NEED_IDENTIFY",
+            "condition": "",
+            "type": "NEED_IDENTIFY",
+            "actions": []
+        },
+        {
+            "name": "货物运送",
+            "condition": "CE-.png|!开始行动.png",
+            "type": "horizontal_swipe",
+            "actions": [
+                {
+                    "name": "货物运送->CE-3选中",
+                    "method": "click",
+                    "condition": "CE-3.png",
+                    "successor": "CE-3选中"
+                }
+            ]
+        },
+        {
+            "name": "CE-3选中",
+            "condition": "CE-3.png",
+            "type": "normal",
+            "actions": [
+                {
+                    "name": "行动配置",
+                    "method": "click",
+                    "condition": "开始行动.png",
+                    "successor": "行动配置"
+                },
+                {
+                    "name": "CE-3选中返回",
+                    "method": "click",
+                    "condition": "返回.png",
+                    "successor": "货物运送"
+                }
+            ]
+        },
+        {
+            "name": "行动结束",
+            "condition": "行动结束.png",
+            "type": "jump",
+            "actions": [
+                {
+                    "name": "行动结束->_NEED_IDENTIFY",
+                    "method": "click",
+                    "condition": "行动结束.png",
+                    "successor": "_NEED_IDENTIFY"
+                }
+            ]
+        },
+        {
+            "name": "同步失败",
+            "condition": "未能成功同步.png",
+            "type": "jump",
+            "actions": [
+                {
+                    "name": "同步失败->_NEED_IDENTIFY",
+                    "method": "click",
+                    "condition": "确定.png",
+                    "successor": "_NEED_IDENTIFY"
+                }
+            ]
         }
-      ]
-    }
-  ]
+    ]
 }
