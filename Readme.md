@@ -15,8 +15,8 @@
 ### 截图
 
 <center class="half">
-  <img src="https://github.com/SeptemberHX/AutoGameTools/blob/master/screenshot/Arknights.png?raw=true" width="50%">
-  <img src="https://github.com/SeptemberHX/AutoGameTools/blob/master/screenshot/config.png?raw=true" width="50%">
+  <img src="https://github.com/SeptemberHX/AutoGameTools/blob/master/screenshot/Arknights.png?raw=true" width="47%">
+  <img src="https://github.com/SeptemberHX/AutoGameTools/blob/master/screenshot/config.png?raw=true" width="47%">
 </center>
 
 ## 使用指南
