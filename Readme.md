@@ -34,7 +34,9 @@
 
 下图表示 LS-3 状态需要图中**出现** Condition LS 以及**不出现** Condition 开始行动
 
-![](https://github.com/SeptemberHX/AutoGameTools/blob/master/screenshot/战斗演习.png?raw=true)![](https://github.com/SeptemberHX/AutoGameTools/blob/master/screenshot/config.png?raw=true)
+<p float="left">
+  <img src="https://github.com/SeptemberHX/AutoGameTools/blob/master/screenshot/config.png?raw=true"  width="50%"/><img src="https://github.com/SeptemberHX/AutoGameTools/blob/master/screenshot/战斗演习.png?raw=true"  width="50%"/>
+</p>
 
 ### 游戏动作（Action）
 
@@ -42,7 +44,9 @@
 
 下图表示从 LS-3选中 状态 到 行动配置 状态 需要点击 开始行动区域
 
-![](https://github.com/SeptemberHX/AutoGameTools/blob/master/screenshot/action_1.png?raw=true)![](https://github.com/SeptemberHX/AutoGameTools/blob/master/screenshot/LS-3-selected.png?raw=true)
+<p float="left">
+  <img src="https://github.com/SeptemberHX/AutoGameTools/blob/master/screenshot/LS-3-selected.png?raw=true"  width="50%"/><img src="https://github.com/SeptemberHX/AutoGameTools/blob/master/screenshot/action_1.png?raw=true"  width="50%"/>
+</p>
 
 ### 运行
 
